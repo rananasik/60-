@@ -22,7 +22,7 @@ body{margin:0;min-height:100vh}
   --ink:#000000;--mute:#6C6C70;--line:#E1E1E6;--line2:#C7C7CC;
   --accent:#007AFF;--accent-soft:#E3EFFF;--on-accent:#FFFFFF;
   --track:#E5E5EA;--st-full:#007AFF;--st-part:#9CC8FF;--st-miss:#FFCFCB;--st-future:#E9E9EE;
-  --danger:#FF3B30;--bar:rgba(249,249,249,.88);
+  --gold:#FFB800;--danger:#FF3B30;--bar:rgba(249,249,249,.88);
   --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
   --f-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
 }
@@ -31,13 +31,13 @@ body{margin:0;min-height:100vh}
   --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
   --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
   --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#5C211E;--st-future:#1C1C1E;
-  --danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}}
+  --gold:#FFD60A;--danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#000000;--surface:#1C1C1E;--surface2:#2C2C2E;
   --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
   --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
   --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#5C211E;--st-future:#1C1C1E;
-  --danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}
+  --gold:#FFD60A;--danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:400 17px/1.3 var(--f-body);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
@@ -135,27 +135,27 @@ svg{display:block}
 .mvbox{background:var(--surface2);border-radius:13px;padding:10px 10px 12px;margin:2px 0 12px}
 .mvh{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:16px;padding-left:6px}
 .mvbox .mname{font-size:14px;margin:8px 6px 6px}
-.mvbox .c{background:transparent;font-size:16px}
-.mvbox .c.sl{background:var(--accent-soft);outline:0}
-.mvbox .c.out{background:transparent}
+.mvbox .c{font-size:16px;height:42px}
+.mvbox .d{width:38px;height:38px}
+.mvbox .d.sl{background:var(--accent-soft);outline:0}
 
 /* calendar */
 .mcard{background:var(--surface);border-radius:16px;padding:14px 10px 12px;margin-top:12px}
 .mname{font-weight:700;font-size:18px;margin:2px 8px 10px}
 .g7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .wd{font-size:12px;color:var(--mute);text-align:center;padding-bottom:4px}
-.c{position:relative;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:17px;line-height:1;font-variant-numeric:tabular-nums;cursor:pointer}
+.c{display:grid;place-items:center;height:46px;font-size:17px;line-height:1;font-variant-numeric:tabular-nums;cursor:pointer}
 .c.e{visibility:hidden}
-.c.fut{background:transparent}
-.c.miss{background:var(--st-miss)}
-.c.part{background:var(--st-part)}
-.c.full{background:var(--st-full);color:var(--on-accent)}
 .c.out{opacity:.3;cursor:default}
-.c.td{box-shadow:inset 0 0 0 2px var(--accent)}
-.c.rw{box-shadow:inset 0 0 0 2px var(--ink)}
-.c.rw.td{box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 4px var(--accent)}
-.c.sl{outline:2px solid var(--ink);outline-offset:1px}
-.mk{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:11px;line-height:1}
+.d{position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:50%}
+.d.miss{background:var(--st-miss)}
+.d.part{background:var(--st-part)}
+.d.full{background:var(--st-full);color:var(--on-accent)}
+.d.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.d.gl{box-shadow:inset 0 0 0 2.5px var(--gold)}
+.d.gl.td{box-shadow:inset 0 0 0 2.5px var(--gold),inset 0 0 0 5px var(--accent)}
+.d.sl{outline:2px solid var(--ink);outline-offset:1px}
+.d.dot::after{content:"";position:absolute;left:50%;bottom:5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--gold)}
 .lgd{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 4px 0;font-size:13px;color:var(--mute)}
 .lgd span{display:inline-flex;align-items:center;gap:6px}
 .lgd i{width:12px;height:12px;border-radius:50%;display:block}
@@ -294,7 +294,7 @@ var got=R.filter(function(x,j){return S.bought[j]});
 if(got.length)h+='<div class="got">'+got.map(function(x){return '<span class="pill">'+I.check+x.n+'</span>'}).join('')+'</div>';
 return h}
 
-function moverHtml(){return '<div class="mvbox"><div class="mvh"><span>Перенести на день</span><button class="ib" data-mv="" aria-label="Закрыть">'+I.close+'</button></div>'+monthsList().map(function(m){return '<div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k2,dn2){var ok2=dn2>=1&&dn2<=DAYS&&s2!=SEL;return '<div class="c'+(s2==SEL?' sl':'')+(ok2?'':' out')+'"'+(ok2?' data-mvto="'+s2+'"':'')+'>'+k2+'</div>'})}).join('')+'</div>'}
+function moverHtml(){return '<div class="mvbox"><div class="mvh"><span>Перенести на день</span><button class="ib" data-mv="" aria-label="Закрыть">'+I.close+'</button></div>'+monthsList().map(function(m){return '<div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k2,dn2){var ok2=dn2>=1&&dn2<=DAYS&&s2!=SEL;return '<div class="c'+(ok2?'':' out')+'"'+(ok2?' data-mvto="'+s2+'"':'')+'><span class="d'+(s2==SEL?' sl':'')+'">'+k2+'</span></div>'})}).join('')+'</div>'}
 
 function tasksHtml(ed,n){var dn=S.done[SEL]||{},all=rows(SEL),act=all.filter(function(r){return !r.away}),away=all.filter(function(r){return r.away});
 var dc=act.filter(function(r){return dn[r.key]}).length;
@@ -318,10 +318,10 @@ if(tn<1)sub='До старта '+(1-tn)+' '+pl(1-tn,['день','дня','дне
 var back=(SEL!=TODAY&&tn>=1&&tn<=DAYS)?' · <button class="lnk" data-go="today">к сегодня</button>':'';
 return tallyHtml()+'<h1 class="ttl">'+title+'</h1><div class="sub">'+sub+back+'</div>'+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)+tasksHtml(ed,n)}
 
-function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal)+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Сделано</span><span><i style="background:var(--st-part)"></i>Частично</span><span><i style="background:var(--st-miss)"></i>Пропущено</span><span><i style="box-shadow:inset 0 0 0 2px var(--ink)"></i>Награда или важная дата</span></div>';
-monthsList().forEach(function(m){h+='<div class="mcard"><div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk='';if(dn2<1||dn2>DAYS)return '<div class="c out">'+k+'</div>';
-R.forEach(function(r){if(r.d==dn2)mk=r.e});if(dn2==31)mk='🚭';if(dn2==DAYS)mk='🏆';
-return '<div class="c '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' rw':'')+'" data-day="'+s2+'">'+k+'</div>'})+'</div>'});
+function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal)+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Сделано</span><span><i style="background:var(--st-part)"></i>Частично</span><span><i style="background:var(--st-miss)"></i>Пропущено</span><span><i style="box-shadow:inset 0 0 0 2px var(--gold)"></i>Награда и финал</span><span><i style="background:var(--gold);width:6px;height:6px"></i>Бросаю курить</span></div>';
+monthsList().forEach(function(m){h+='<div class="mcard"><div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk='';if(dn2<1||dn2>DAYS)return '<div class="c out"><span class="d">'+k+'</span></div>';
+R.forEach(function(r){if(r.d==dn2)mk=1});if(dn2==DAYS)mk=1;
+return '<div class="c" data-day="'+s2+'"><span class="d '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' gl':'')+(dn2==31?' dot':'')+'">'+k+'</span></div>'})+'</div>'});
 var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' · '+money(r.c),b:S.bought[i]}}).concat([{d:31,e:'🚭',t:'Бросаю курить',s:'Задание «Не курю» появляется в списке'},{d:DAYS,e:'🏆',t:'Итоги челленджа',s:'Подводим результаты'}]);
 ev.sort(function(a,b){return a.d-b.d});
 h+='<div class="gh"><b>Ключевые даты</b></div><div class="card">'+ev.map(function(x){return '<div class="kd"><div class="tile">'+x.e+'</div><div class="tx"><b>'+x.t+'</b><span class="rs">'+dstr(dateOf(x.d))+' · '+x.s+'</span></div>'+(x.b?'<span class="ok">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>';

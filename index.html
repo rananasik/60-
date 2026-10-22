@@ -21,7 +21,7 @@ body{margin:0;min-height:100vh}
   --bg:#F2F2F7;--surface:#FFFFFF;--surface2:#EFEFF4;
   --ink:#000000;--mute:#6C6C70;--line:#E1E1E6;--line2:#C7C7CC;
   --accent:#007AFF;--accent-soft:#E3EFFF;--on-accent:#FFFFFF;
-  --track:#E5E5EA;--st-full:#007AFF;--st-part:#9CC8FF;--st-miss:#DCDCE1;--st-future:#E9E9EE;
+  --track:#E5E5EA;--st-full:#007AFF;--st-part:#9CC8FF;--st-miss:#FFCFCB;--st-future:#E9E9EE;
   --danger:#FF3B30;--bar:rgba(249,249,249,.88);
   --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
   --f-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
@@ -30,13 +30,13 @@ body{margin:0;min-height:100vh}
   --bg:#000000;--surface:#1C1C1E;--surface2:#2C2C2E;
   --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
   --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
-  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#2C2C2E;--st-future:#1C1C1E;
+  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#5C211E;--st-future:#1C1C1E;
   --danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#000000;--surface:#1C1C1E;--surface2:#2C2C2E;
   --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
   --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
-  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#2C2C2E;--st-future:#1C1C1E;
+  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#5C211E;--st-future:#1C1C1E;
   --danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -154,6 +154,9 @@ svg{display:block}
 .c.td{box-shadow:inset 0 0 0 2px var(--accent)}
 .c.sl{outline:2px solid var(--ink);outline-offset:1px}
 .mk{font-size:10px;line-height:1}
+.lgd{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 4px 0;font-size:13px;color:var(--mute)}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.lgd i{width:12px;height:12px;border-radius:50%;display:block}
 .kd{position:relative;display:flex;align-items:center;gap:12px;min-height:64px}
 .kd::after{content:"";position:absolute;left:52px;right:0;bottom:0;height:.5px;background:var(--line)}
 .kd:last-child::after{display:none}
@@ -313,7 +316,7 @@ if(tn<1)sub='До старта '+(1-tn)+' '+pl(1-tn,['день','дня','дне
 var back=(SEL!=TODAY&&tn>=1&&tn<=DAYS)?' · <button class="lnk" data-go="today">к сегодня</button>':'';
 return tallyHtml()+'<h1 class="ttl">'+title+'</h1><div class="sub">'+sub+back+'</div>'+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)+tasksHtml(ed,n)}
 
-function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal);
+function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal)+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Сделано</span><span><i style="background:var(--st-part)"></i>Частично</span><span><i style="background:var(--st-miss)"></i>Пропущено</span></div>';
 monthsList().forEach(function(m){h+='<div class="mcard"><div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk='';if(dn2<1||dn2>DAYS)return '<div class="c out">'+k+'</div>';
 R.forEach(function(r){if(r.d==dn2)mk=r.e});if(dn2==31)mk='🚭';if(dn2==DAYS)mk='🏆';
 return '<div class="c '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+'" data-day="'+s2+'">'+k+(mk?'<span class="mk">'+mk+'</span>':'')+'</div>'})+'</div>'});

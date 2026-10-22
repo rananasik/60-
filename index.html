@@ -207,7 +207,7 @@ svg{display:block}
 </nav>
 
 <script>
-var START=new Date(2026,9,22),DAYS=61;
+var START=new Date(2026,10,1),DAYS=61;
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function parse(s){var a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])}
 function dayNo(s){return Math.round((parse(s)-START)/864e5)+1}
@@ -244,7 +244,7 @@ function uid(){return 'p'+Date.now().toString(36)+Math.random().toString(36).sli
 function dayState(s){var n=dayNo(s);if(n<1||n>DAYS)return 'out';if(s>TODAY)return 'fut';
 var base=0;rows(s).forEach(function(x){if(!x.away)base+=x.id=='work'?4:T[x.id].p});
 var q=base?pts(s)/base:0;if(q>=.85)return 'full';if(q>0)return 'part';return s==TODAY?'fut':'miss'}
-function migrate(){S.hrs=S.hrs||{};S.mv=S.mv||[];S.pay=S.pay||[];if(S.inc>0&&!S.pay.length&&!S.payMig)S.pay.push({id:'m0',date:fmt(new Date()),amt:S.inc});S.payMig=true;delete S.inc;for(var k in S.done){var d=S.done[k];if(typeof d.work==='number'){if(d.work>0)S.hrs[k]=d.work;d.work=d.work>0}}}
+function migrate(){if(S.v!==2)S={pay:[],done:{},hrs:{},mv:[],bought:[false,false,false,false],v:2};S.hrs=S.hrs||{};S.mv=S.mv||[];S.pay=S.pay||[];if(S.inc>0&&!S.pay.length&&!S.payMig)S.pay.push({id:'m0',date:fmt(new Date()),amt:S.inc});S.payMig=true;delete S.inc;for(var k in S.done){var d=S.done[k];if(typeof d.work==='number'){if(d.work>0)S.hrs[k]=d.work;d.work=d.work>0}}}
 function save(){try{localStorage.setItem('c60',JSON.stringify(S))}catch(e){}
 if(dbDoc){clearTimeout(save.t);save.t=setTimeout(function(){dbDoc.set({s:JSON.stringify(S)}).catch(function(){})},400)}}
 try{var raw=localStorage.getItem('c60');if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
@@ -307,7 +307,7 @@ if(mvTask==k)h+=moverHtml()});
 return h+'</div>'}
 
 function todayHtml(tot,bal){var n=dayNo(SEL),tn=dayNo(TODAY),ed=n>=1&&SEL<=TODAY;
-var title=n<1?'Старт '+dstr(dateOf(1)):n>DAYS?'Готово':n==DAYS?'Итоги':'День '+n;
+var title=(n<1||(tn<1&&n==1))?'Старт '+dstr(dateOf(1)):n>DAYS?'Готово':n==DAYS?'Итоги':'День '+n;
 var d=parse(SEL),sub=WD[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()];
 if(tn<1)sub='До старта '+(1-tn)+' '+pl(1-tn,['день','дня','дней'])+' · '+sub;else if(n>=1&&n<=DAYS)sub+=' · из 60';
 var back=(SEL!=TODAY&&tn>=1&&tn<=DAYS)?' · <button class="lnk" data-go="today">к сегодня</button>':'';

@@ -152,6 +152,8 @@ svg{display:block}
 .c.full{background:var(--st-full);color:var(--on-accent)}
 .c.out{opacity:.3;cursor:default}
 .c.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.c.rw{box-shadow:inset 0 0 0 2px var(--ink)}
+.c.rw.td{box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 4px var(--accent)}
 .c.sl{outline:2px solid var(--ink);outline-offset:1px}
 .mk{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:11px;line-height:1}
 .lgd{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 4px 0;font-size:13px;color:var(--mute)}
@@ -316,10 +318,10 @@ if(tn<1)sub='До старта '+(1-tn)+' '+pl(1-tn,['день','дня','дне
 var back=(SEL!=TODAY&&tn>=1&&tn<=DAYS)?' · <button class="lnk" data-go="today">к сегодня</button>':'';
 return tallyHtml()+'<h1 class="ttl">'+title+'</h1><div class="sub">'+sub+back+'</div>'+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)+tasksHtml(ed,n)}
 
-function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal)+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Сделано</span><span><i style="background:var(--st-part)"></i>Частично</span><span><i style="background:var(--st-miss)"></i>Пропущено</span></div>';
+function calHtml(tot,bal){var h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задания</div>'+statsHtml(tot,bal)+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Сделано</span><span><i style="background:var(--st-part)"></i>Частично</span><span><i style="background:var(--st-miss)"></i>Пропущено</span><span><i style="box-shadow:inset 0 0 0 2px var(--ink)"></i>Награда или важная дата</span></div>';
 monthsList().forEach(function(m){h+='<div class="mcard"><div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk='';if(dn2<1||dn2>DAYS)return '<div class="c out">'+k+'</div>';
 R.forEach(function(r){if(r.d==dn2)mk=r.e});if(dn2==31)mk='🚭';if(dn2==DAYS)mk='🏆';
-return '<div class="c '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+'" data-day="'+s2+'">'+k+(mk?'<span class="mk">'+mk+'</span>':'')+'</div>'})+'</div>'});
+return '<div class="c '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' rw':'')+'" data-day="'+s2+'">'+k+'</div>'})+'</div>'});
 var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' · '+money(r.c),b:S.bought[i]}}).concat([{d:31,e:'🚭',t:'Бросаю курить',s:'Задание «Не курю» появляется в списке'},{d:DAYS,e:'🏆',t:'Итоги челленджа',s:'Подводим результаты'}]);
 ev.sort(function(a,b){return a.d-b.d});
 h+='<div class="gh"><b>Ключевые даты</b></div><div class="card">'+ev.map(function(x){return '<div class="kd"><div class="tile">'+x.e+'</div><div class="tx"><b>'+x.t+'</b><span class="rs">'+dstr(dateOf(x.d))+' · '+x.s+'</span></div>'+(x.b?'<span class="ok">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>';

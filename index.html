@@ -18,7 +18,7 @@
 :root{
   --paper:#ECEEF2;--card:#FFFFFF;--card2:#F3F4F7;--ink:#15171C;--mute:#6C707A;--faint:#A9ADB6;--line:#E4E6EB;--track:#E6E8EE;
   --blue:#3247FF;--blue-soft:#E3E7FF;--on:#FFFFFF;--sun:#FFBE1A;--sun-soft:#FFF2CC;--danger:#EE3A2C;
-  --s1:#FF5A2C;--s2:#7A5BFF;--s3:#0FB39A;--s4:#F0A100;--ev:#F0458A;--ct:#7A5BFF;
+  --s1:#FF5A2C;--s2:#7A5BFF;--s3:#0FB39A;--s4:#F0A100;--ev:#FF7A1A;--ct:#12B886;
   --navbg:rgba(255,255,255,.82);--shadow:0 10px 30px rgba(21,23,28,.10),0 1px 2px rgba(21,23,28,.06);
   --f-ui:"Onest",-apple-system,BlinkMacSystemFont,"Helvetica Neue",system-ui,sans-serif;
   --f-d:"Unbounded","Onest",-apple-system,system-ui,sans-serif;
@@ -27,12 +27,12 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#000000;--card:#16171B;--card2:#212228;--ink:#F4F5F7;--mute:#8F929C;--faint:#5A5D66;--line:#26272D;--track:#2A2C33;
   --blue:#5F72FF;--blue-soft:#1C2463;--sun:#FFC83A;--sun-soft:#3A2F0C;--danger:#FF5A4D;
-  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;--ev:#FF5C9C;--ct:#8C72FF;
+  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;--ev:#FF8A33;--ct:#22C997;
   --navbg:rgba(30,31,36,.82);--shadow:0 10px 30px rgba(0,0,0,.5);color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#000000;--card:#16171B;--card2:#212228;--ink:#F4F5F7;--mute:#8F929C;--faint:#5A5D66;--line:#26272D;--track:#2A2C33;
   --blue:#5F72FF;--blue-soft:#1C2463;--sun:#FFC83A;--sun-soft:#3A2F0C;--danger:#FF5A4D;
-  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;--ev:#FF5C9C;--ct:#8C72FF;
+  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;--ev:#FF8A33;--ct:#22C997;
   --navbg:rgba(30,31,36,.82);--shadow:0 10px 30px rgba(0,0,0,.5);color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -682,7 +682,7 @@ var calF='all';try{calF=localStorage.getItem('c60f')||'all'}catch(e){}
 var itBack=null,colOpen=false;
 var SW=['#F0458A','#EE3A2C','#FF7A1A','#F0A100','#12B886','#0FB39A','#1FA2FF','#3247FF','#7A5BFF','#6C707A'];
 function applyCC(){var r=document.documentElement.style,c=S.cc||{};['ev','ct'].forEach(function(k){r.removeProperty('--'+k)})}
-function colPanel(){var c=S.cc||{};return '<div class="colp">'+[['ev','Мероприятия','#F0458A'],['ct','Контент','#7A5BFF']].map(function(r){var cur=c[r[0]]||r[2];return '<div class="cprow"><span>'+r[1]+'</span><div class="sws">'+SW.map(function(h){return '<button class="sw'+(cur.toUpperCase()==h?' on':'')+'" style="--c:'+h+'" data-sw="'+r[0]+':'+h+'" aria-label="'+r[1]+': цвет '+h+'"></button>'}).join('')+'</div></div>'}).join('')+'<div class="cpf"><button class="lnk2" data-sw="reset">Вернуть стандартные</button><button class="chip" data-colp="1">Готово</button></div></div>'}
+function colPanel(){var c=S.cc||{};return '<div class="colp">'+[['ev','Мероприятия','#FF7A1A'],['ct','Контент','#12B886']].map(function(r){var cur=c[r[0]]||r[2];return '<div class="cprow"><span>'+r[1]+'</span><div class="sws">'+SW.map(function(h){return '<button class="sw'+(cur.toUpperCase()==h?' on':'')+'" style="--c:'+h+'" data-sw="'+r[0]+':'+h+'" aria-label="'+r[1]+': цвет '+h+'"></button>'}).join('')+'</div></div>'}).join('')+'<div class="cpf"><button class="lnk2" data-sw="reset">Вернуть стандартные</button><button class="chip" data-colp="1">Готово</button></div></div>'}
 var CF=[['all','Все','var(--ink)'],['ch','60 дней','var(--blue)'],['ev','Мероприятия','var(--ev)'],['ct','Контент','var(--ct)']];
 var CST=[['idea','Идея'],['shot','Снято'],['edit','Монтаж'],['pub','Вышло']];
 var CFMT=['Reels','TikTok','YouTube','Пост','Сторис'];

@@ -712,7 +712,7 @@ var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d'
 if((calF=='all'||calF=='ch')&&isCh){cls+=' '+dayState(s2);if(mk)cls+=' gl';if(dn2==DAYS)inner='🏆'}
 else if(s2<TODAY)cls+=' past';
 if(calF=='ev'&&ne){cls+=' ev';sty=' style="background:'+icol(le[0])+'"'}if(calF=='ct'&&nc){cls+=' ct';sty=' style="background:'+icol(lc[0])+'"'}
-if(calF=='all'&&(ne||nc))inner+='<span class="dots">'+le.concat(lc).slice(0,3).map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>';
+if(calF=='all'&&(ne||nc)&&cls.indexOf(' full')<0){var f1=le.concat(lc).sort(function(a,b){return (a.time||'99')<(b.time||'99')?-1:1})[0];sty=' style="color:'+icol(f1)+';font-weight:700"'}
 if((calF=='ev'&&ne>1)||(calF=='ct'&&nc>1))inner+='<span class="cnt2">'+(calF=='ev'?ne:nc)+'</span>';
 if(s2==TODAY)cls+=' td';if(s2==SEL&&calF=='ch')cls+=' sl';
 return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'</span></div>'})+'</section>'});

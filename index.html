@@ -399,7 +399,10 @@ input[type=file]{display:none}
 .isw .lnk2{margin-top:10px}
 /* day markers */
 .d{display:flex;align-items:center;justify-content:center;line-height:1}
-.d .n{display:block;font-weight:inherit}
+.d .n{display:block;font-weight:inherit;line-height:1;text-box:trim-both cap alphabetic}
+.c .d{flex:none;margin:auto}
+.d.td{box-shadow:none}
+.d.td::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--ink);pointer-events:none}
 .mk{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);display:flex;gap:2px;width:16px}
 .mk i{flex:1;height:3px;border-radius:2px}
 .d.full .mk i{box-shadow:0 0 0 1px #fff}

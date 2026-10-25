@@ -406,6 +406,10 @@ input[type=file]{display:none}
 .mk{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);display:flex;gap:2px;width:16px}
 .mk i{flex:1;height:3px;border-radius:2px}
 .d.full .mk i{box-shadow:0 0 0 1px #fff}
+.month .c{position:relative;height:52px}
+.month .d{width:38px;height:38px;margin:0 auto 6px}
+.month .mk{bottom:3px}
+.d.td::before{border-width:1.5px}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -722,9 +726,9 @@ if((calF=='all'||calF=='ch')&&isCh){cls+=' '+dayState(s2);if(mk)cls+=' gl';if(dn
 else if(s2<TODAY)cls+=' past';
 var its=(calF=='all'?le.concat(lc):calF=='ev'?le:calF=='ct'?lc:[]).sort(function(a,b){return (a.time||'99')<(b.time||'99')?-1:1});
 inner='<b class="n">'+inner+'</b>';
-if(its.length){cls+=' hasit';sty=' style="--c:'+icol(its[0])+'"';inner+='<span class="mk">'+its.slice(0,3).map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>'}
+var mkh='';if(its.length){cls+=' hasit';sty=' style="--c:'+icol(its[0])+'"';mkh='<span class="mk">'+its.slice(0,3).map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>'}
 if(s2==TODAY)cls+=' td';if(s2==SEL&&calF=='ch')cls+=' sl';
-return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'</span></div>'})+'</section>'});
+return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'</span>'+mkh+'</div>'})+'</section>'});
 if(calF=='ch'){var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' и '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Финал челленджа',s:'Подводим итоги'}]);
 ev.sort(function(a,b){return a.d-b.d});
 h+=sh('Чекпоинты')+'<div class="grp">'+ev.map(function(x){return '<div class="row kd"><span class="emo sm">'+x.e+'</span><span class="rt">'+x.t+'<small>'+dstr(dateOf(x.d))+', '+x.s+'</small></span>'+(x.b?'<span class="okd">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>'}

@@ -394,6 +394,9 @@ input[type=file]{display:none}
 .sw.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--c);transform:scale(.86)}
 .cpf{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .lnk2{border:0;background:none;padding:0;color:var(--mute);font-size:14px}
+.isw{background:var(--card);border-radius:20px;padding:12px 14px;margin:0 0 12px}
+.isw>span{display:block;font-size:14px;color:var(--mute);margin-bottom:10px}
+.isw .lnk2{margin-top:10px}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -678,7 +681,7 @@ function toTop(){try{window.scrollTo(0,0)}catch(e){}}
 var calF='all';try{calF=localStorage.getItem('c60f')||'all'}catch(e){}
 var itBack=null,colOpen=false;
 var SW=['#F0458A','#EE3A2C','#FF7A1A','#F0A100','#12B886','#0FB39A','#1FA2FF','#3247FF','#7A5BFF','#6C707A'];
-function applyCC(){var r=document.documentElement.style,c=S.cc||{};['ev','ct'].forEach(function(k){if(c[k])r.setProperty('--'+k,c[k]);else r.removeProperty('--'+k)})}
+function applyCC(){var r=document.documentElement.style,c=S.cc||{};['ev','ct'].forEach(function(k){r.removeProperty('--'+k)})}
 function colPanel(){var c=S.cc||{};return '<div class="colp">'+[['ev','Мероприятия','#F0458A'],['ct','Контент','#7A5BFF']].map(function(r){var cur=c[r[0]]||r[2];return '<div class="cprow"><span>'+r[1]+'</span><div class="sws">'+SW.map(function(h){return '<button class="sw'+(cur.toUpperCase()==h?' on':'')+'" style="--c:'+h+'" data-sw="'+r[0]+':'+h+'" aria-label="'+r[1]+': цвет '+h+'"></button>'}).join('')+'</div></div>'}).join('')+'<div class="cpf"><button class="lnk2" data-sw="reset">Вернуть стандартные</button><button class="chip" data-colp="1">Готово</button></div></div>'}
 var CF=[['all','Все','var(--ink)'],['ch','60 дней','var(--blue)'],['ev','Мероприятия','var(--ev)'],['ct','Контент','var(--ct)']];
 var CST=[['idea','Идея'],['shot','Снято'],['edit','Монтаж'],['pub','Вышло']];
@@ -688,30 +691,31 @@ function evs(){return S.ev||(S.ev=[])}
 function evById(id){return evs().filter(function(x){return x.id==id})[0]}
 function evOn(d,k){return evs().filter(function(x){return x.date==d&&(!k||x.k==k)}).sort(function(a,b){return (a.time||'99')<(b.time||'99')?-1:1})}
 function kc(k){return k=='ev'?'var(--ev)':'var(--ct)'}
+function icol(x){return x.c||kc(x.k)}
 function cstName(s){for(var i=0;i<CST.length;i++)if(CST[i][0]==s)return CST[i][1];return 'Идея'}
 function calMonths(){var f=parse(TODAY)<START?parse(TODAY):START,e=parse(dateOf(DAYS));evs().forEach(function(x){var d=parse(x.date);if(d>e)e=d});
 var out=[],a=new Date(f.getFullYear(),f.getMonth(),1);while(a<=e){out.push([a.getFullYear(),a.getMonth()]);a=new Date(a.getFullYear(),a.getMonth()+1,1)}return out}
 function itMeta(x,withDate){var m=[];if(withDate)m.push(dstr(x.date));if(x.k=='ev'&&x.time)m.push(x.time);if(x.k=='ct'&&x.f)m.push(x.f);var p=x.p&&pById(x.p);if(p)m.push(esc(p.n));return m.join(', ')}
 function stChip(x){return '<button class="stc '+(x.st||'idea')+'" data-cst="'+x.id+'" aria-label="Статус: '+cstName(x.st)+', нажми, чтобы сменить">'+cstName(x.st)+'</button>'}
 function itRow(x,dateBlock){var d=parse(x.date);
-return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'">'+(dateBlock?'<span class="dbk" style="--c:'+kc(x.k)+'"><b>'+d.getDate()+'</b><small>'+MS[d.getMonth()]+'</small></span>':'<span class="kdot" style="background:'+kc(x.k)+'"></span>')+'<span class="rt">'+esc(x.t)+'<small>'+(itMeta(x,false)||(x.k=='ev'?'Мероприятие':'Контент'))+'</small></span></button>'+(x.k=='ct'?stChip(x):'')+'</div>'}
+return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'">'+(dateBlock?'<span class="dbk" style="--c:'+icol(x)+'"><b>'+d.getDate()+'</b><small>'+MS[d.getMonth()]+'</small></span>':'<span class="kdot" style="background:'+icol(x)+'"></span>')+'<span class="rt">'+esc(x.t)+'<small>'+(itMeta(x,false)||(x.k=='ev'?'Мероприятие':'Контент'))+'</small></span></button>'+(x.k=='ct'?stChip(x):'')+'</div>'}
 function addEvForm(k,date){var ev=k=='ev';
 return '<form class="newp" data-eadd="'+k+'" autocomplete="off"><div class="add"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-'+k+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(ev?'Новое мероприятие':'Что снять или выложить')+'" aria-label="Название"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></div><div class="frow2"><label class="pchip"><span>Дата</span><input type="date" name="ed" value="'+(date||TODAY)+'"></label>'+(ev?'<label class="pchip"><span>Время</span><input type="time" name="et"></label>':'<label class="pchip"><span>Формат</span><select name="ef">'+CFMT.map(function(f){return '<option>'+f+'</option>'}).join('')+'</select></label>')+'</div></form>'}
 
-function calHtml(tot,bal){var h='<header class="top"><div><h1 class="ttl">Календарь</h1><p class="dt">'+({all:'Нажми на день, чтобы открыть его',ch:'Дни челленджа и чекпоинты',ev:'Когда ты занят',ct:'Что и когда выходит'})[calF]+'</p></div><button class="ib pal'+(colOpen?' on':'')+'" data-colp="1" aria-label="Цвета календаря" aria-expanded="'+colOpen+'">'+ic('<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.1-4-7.5-9-7.5z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7.5" r="1.2" fill="currentColor"/><circle cx="15" cy="8" r="1.2" fill="currentColor"/>')+'</button></header>'+(colOpen?colPanel():'');
+function calHtml(tot,bal){var h='<header class="top"><div><h1 class="ttl">Календарь</h1><p class="dt">'+({all:'Нажми на день, чтобы открыть его',ch:'Дни челленджа и чекпоинты',ev:'Когда ты занят',ct:'Что и когда выходит'})[calF]+'</p></div></header>';
 h+='<div class="cf" role="tablist" aria-label="Фильтр календаря">'+CF.map(function(f){return '<button class="cfb'+(calF==f[0]?' on':'')+'" role="tab" aria-selected="'+(calF==f[0])+'" data-cf="'+f[0]+'" style="--c:'+f[2]+'"><i></i>'+f[1]+'</button>'}).join('')+'</div>';
 if(calF=='all')h+='<div class="lgd"><span><i class="lg full"></i>Идеальный день</span><span><i class="lg cp"></i>Чекпоинт</span><span><i class="lg" style="background:var(--ev)"></i>Мероприятие</span><span><i class="lg" style="background:var(--ct)"></i>Контент</span></div>';
 else if(calF=='ch')h+='<div class="lgd"><span><i class="lg full"></i>Идеальный день</span><span><i class="lg part"></i>От 85%</span><span><i class="lg cp"></i>Чекпоинт</span><span>🏆 Финал</span></div>';
 if(calF=='ev'||calF=='ct')h+=addEvForm(calF);
 calMonths().forEach(function(m){h+='<section class="month"><h3>'+MNN[m[1]]+' <span>'+m[0]+'</span></h3>'+gridHtml(m[0],m[1],function(s2,k,dn2){
-var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d',inner=String(k),ne=evOn(s2,'ev').length,nc=evOn(s2,'ct').length;
+var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d',inner=String(k),le=evOn(s2,'ev'),lc=evOn(s2,'ct'),ne=le.length,nc=lc.length,sty='';
 if((calF=='all'||calF=='ch')&&isCh){cls+=' '+dayState(s2);if(mk)cls+=' gl';if(dn2==DAYS)inner='🏆'}
 else if(s2<TODAY)cls+=' past';
-if(calF=='ev'&&ne)cls+=' ev';if(calF=='ct'&&nc)cls+=' ct';
-if(calF=='all'&&(ne||nc))inner+='<span class="dots">'+(ne?'<i class="de"></i>':'')+(nc?'<i class="dc"></i>':'')+'</span>';
+if(calF=='ev'&&ne){cls+=' ev';sty=' style="background:'+icol(le[0])+'"'}if(calF=='ct'&&nc){cls+=' ct';sty=' style="background:'+icol(lc[0])+'"'}
+if(calF=='all'&&(ne||nc))inner+='<span class="dots">'+le.concat(lc).slice(0,3).map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>';
 if((calF=='ev'&&ne>1)||(calF=='ct'&&nc>1))inner+='<span class="cnt2">'+(calF=='ev'?ne:nc)+'</span>';
 if(s2==TODAY)cls+=' td';if(s2==SEL&&calF=='ch')cls+=' sl';
-return '<div class="c" data-day="'+s2+'"><span class="'+cls+'">'+inner+'</span></div>'})+'</section>'});
+return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'</span></div>'})+'</section>'});
 if(calF=='ch'){var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' и '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Финал челленджа',s:'Подводим итоги'}]);
 ev.sort(function(a,b){return a.d-b.d});
 h+=sh('Чекпоинты')+'<div class="grp">'+ev.map(function(x){return '<div class="row kd"><span class="emo sm">'+x.e+'</span><span class="rt">'+x.t+'<small>'+dstr(dateOf(x.d))+', '+x.s+'</small></span>'+(x.b?'<span class="okd">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>'}
@@ -734,12 +738,13 @@ return h}
 function itemView(id){var x=evById(id);if(!x){view=itBack||null;itBack=null;return view?render2():calHtml()}
 var bk=itBack||'',ev=x.k=='ev';
 var h=back(bk,bk.indexOf('day:')==0?'День':bk.indexOf('proj:')==0?'Проект':'Календарь')+warnHtml();
-h+='<span class="tagc" style="--c:'+kc(x.k)+'"><i></i>'+(ev?'Мероприятие':'Контент')+'</span>';
+h+='<span class="tagc" style="--c:'+icol(x)+'"><i></i>'+(ev?'Мероприятие':'Контент')+'</span>';
 h+='<input class="tin" data-itt="1" type="text" maxlength="120" value="'+esc(x.t)+'" placeholder="Название" aria-label="Название">';
 h+='<div class="chips"><label class="pchip"><span>Дата</span><input type="date" data-idate="1" value="'+x.date+'" aria-label="Дата"></label>';
 if(ev)h+='<label class="pchip"><span>Время</span><input type="time" data-itime="1" value="'+(x.time||'')+'" aria-label="Время"></label>';
 else h+='<label class="pchip"><span>Формат</span><select data-ik="1">'+CFMT.map(function(f){return '<option'+(x.f==f?' selected':'')+'>'+f+'</option>'}).join('')+'</select></label><label class="pchip"><span>Статус</span><select data-is="1">'+CST.map(function(s){return '<option value="'+s[0]+'"'+(x.st==s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>';
 h+='<label class="pchip"><span>Проект</span><select data-ip="1"><option value="">нет</option>'+projs().map(function(p){return '<option value="'+p.id+'"'+(x.p==p.id?' selected':'')+'>'+esc(p.n)+'</option>'}).join('')+'</select></label></div>';
+h+='<div class="isw"><span>Цвет</span><div class="sws">'+SW.map(function(hx){return '<button class="sw'+((x.c||'').toUpperCase()==hx?' on':'')+'" style="--c:'+hx+'" data-isw="'+hx+'" aria-label="Цвет '+hx+'"></button>'}).join('')+'</div>'+(x.c?'<button class="lnk2" data-isw="auto">Стандартный</button>':'')+'</div>';
 var p=x.p&&pById(x.p);
 if(p)h+='<button class="pcard" data-view="proj:'+p.id+'" style="margin-bottom:6px"><div class="pct"><b>'+esc(p.n)+'</b><span class="cnt">'+pDone(p)+'/'+p.nodes.length+'</span></div>'+metro(p)+'</button>';
 h+=sh(ev?'Детали':'Описание')+'<textarea class="ta" data-inote="1" placeholder="'+(ev?'Где, с кем, что взять с собой':'Идея ролика, сценарий, хуки, ссылки на референсы')+'" aria-label="Описание">'+esc(x.note||'')+'</textarea>';
@@ -752,7 +757,7 @@ function calTodayHtml(){var ce=evOn(SEL);if(!ce.length)return '';
 return sh('В календаре',ce.length)+'<div class="grp">'+ce.map(function(x){return itRow(x,false)}).join('')+'</div>'}
 
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
+app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
 if(D.tg){var ek2=SEL+'|'+D.tg;exp[ek2]=!exp[ek2]}
 else if(D.tdel){S.todos[SEL]=tdl(SEL).filter(function(x){return x.id!=D.tdel});save()}
 else if('view' in D){if(String(D.view).indexOf('it:')==0)itBack=view;view=D.view||null;editPay=null;delP=null;toTop()}
@@ -770,6 +775,7 @@ else if(D.mvto){move(mvTask,SEL,D.mvto);mvTask=null}
 else if(D.undo){undo(D.undo,SEL)}
 else if('mv' in D){mvTask=D.mv||null}
 else if(D.day){if(calF=='ch'){SEL=D.day;tab='today';view=null;mvTask=null}else{view='day:'+D.day}toTop()}
+else if(D.isw){var iw=evById(String(view).split(':')[1]);if(iw){iw.c=D.isw=='auto'?'':D.isw;save()}}
 else if(D.colp){colOpen=!colOpen}
 else if(D.sw){if(D.sw=='reset')S.cc={};else{var sp2=D.sw.split(':');S.cc=S.cc||{};S.cc[sp2[0]]=sp2[1]}save()}
 else if(D.cf){calF=D.cf;try{localStorage.setItem('c60f',calF)}catch(e){}}

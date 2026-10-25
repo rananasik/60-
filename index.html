@@ -397,6 +397,12 @@ input[type=file]{display:none}
 .isw{background:var(--card);border-radius:20px;padding:12px 14px;margin:0 0 12px}
 .isw>span{display:block;font-size:14px;color:var(--mute);margin-bottom:10px}
 .isw .lnk2{margin-top:10px}
+/* day markers */
+.d{display:flex;align-items:center;justify-content:center;line-height:1}
+.d .n{display:block;font-weight:inherit}
+.mk{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);display:flex;gap:2px;width:16px}
+.mk i{flex:1;height:3px;border-radius:2px}
+.d.full .mk i{box-shadow:0 0 0 1px #fff}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -711,9 +717,9 @@ calMonths().forEach(function(m){h+='<section class="month"><h3>'+MNN[m[1]]+' <sp
 var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d',inner=String(k),le=evOn(s2,'ev'),lc=evOn(s2,'ct'),ne=le.length,nc=lc.length,sty='';
 if((calF=='all'||calF=='ch')&&isCh){cls+=' '+dayState(s2);if(mk)cls+=' gl';if(dn2==DAYS)inner='🏆'}
 else if(s2<TODAY)cls+=' past';
-if(calF=='ev'&&ne){cls+=' ev';sty=' style="background:'+icol(le[0])+'"'}if(calF=='ct'&&nc){cls+=' ct';sty=' style="background:'+icol(lc[0])+'"'}
-if(calF=='all'&&(ne||nc)&&cls.indexOf(' full')<0){var f1=le.concat(lc).sort(function(a,b){return (a.time||'99')<(b.time||'99')?-1:1})[0];sty=' style="color:'+icol(f1)+';font-weight:700"'}
-if((calF=='ev'&&ne>1)||(calF=='ct'&&nc>1))inner+='<span class="cnt2">'+(calF=='ev'?ne:nc)+'</span>';
+var its=(calF=='all'?le.concat(lc):calF=='ev'?le:calF=='ct'?lc:[]).sort(function(a,b){return (a.time||'99')<(b.time||'99')?-1:1});
+inner='<b class="n">'+inner+'</b>';
+if(its.length){cls+=' hasit';sty=' style="--c:'+icol(its[0])+'"';inner+='<span class="mk">'+its.slice(0,3).map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>'}
 if(s2==TODAY)cls+=' td';if(s2==SEL&&calF=='ch')cls+=' sl';
 return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'</span></div>'})+'</section>'});
 if(calF=='ch'){var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' и '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Финал челленджа',s:'Подводим итоги'}]);

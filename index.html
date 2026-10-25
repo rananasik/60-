@@ -119,8 +119,8 @@ p{margin:0}
 .add{position:relative;display:flex;align-items:center;gap:10px;min-height:56px}
 .addi{flex:none;width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
 .addi svg{width:15px;height:15px}
-.ain{flex:1;min-width:0;height:44px;border:0;background:transparent;font-size:16px;padding:0}
-.ain::placeholder{color:var(--faint)}
+.ain{flex:1;min-width:0;height:44px;border:0;background:transparent;font:400 16px/1.2 var(--f-ui);padding:0}
+.ain::placeholder{color:var(--faint);font-weight:400;opacity:1}
 .go{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .15s}
 .go svg{width:15px;height:15px}
 .add:focus-within .go{opacity:1;pointer-events:auto}
@@ -205,7 +205,7 @@ select.inp{appearance:none;-webkit-appearance:none;margin-top:10px}
 .d.past,.d.miss{color:var(--faint)}
 .d.part{background:var(--blue-soft);color:var(--blue)}
 .d.full{background:var(--blue);color:#fff}
-.d.gl{background:var(--sun-soft);color:#9A6A00;font-weight:700}
+.d.gl{background:var(--sun);color:#15171C;font-weight:700}
 .d.gl.full{background:var(--blue);color:#fff}
 .d.td{box-shadow:inset 0 0 0 2px var(--ink)}
 .d.sl:not(.td){outline:2px solid var(--blue);outline-offset:2px}
@@ -342,6 +342,15 @@ input[type=file]{display:none}
 .qtb{display:block;width:100%;border:0;background:transparent;padding:0;text-align:left;color:inherit}
 .qtb .qt::after{content:"";display:inline-block;width:6px;height:6px;margin-left:8px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:translateY(-3px) rotate(45deg);transition:transform .15s}
 .qn.op .qtb .qt::after{transform:translateY(0) rotate(-135deg)}
+.newp{background:var(--card);border-radius:22px;padding:2px 12px 12px 14px}
+.newp .add{min-height:54px}
+.newp .go{opacity:1;pointer-events:auto}
+.seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--card2)}
+.seg label{flex:1;position:relative;cursor:pointer}
+.seg input{position:absolute;opacity:0;inset:0;margin:0}
+.seg span{display:block;text-align:center;height:34px;line-height:34px;border-radius:10px;font-size:14px;font-weight:600;color:var(--mute);transition:background-color .15s,color .15s}
+.seg input:checked+span{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg input:focus-visible+span{outline:2px solid var(--blue)}
 </style>
 
 </head>
@@ -514,8 +523,8 @@ return h+todosHtml()}
 
 /* ---- calendar ---- */
 function calHtml(tot,bal){var tn=dayNo(TODAY),h='<header class="top"><div><h1 class="ttl">Календарь</h1><p class="dt">Нажми на день, чтобы открыть его дела</p></div></header>';
-h+='<div class="lgd"><span><i class="lg full"></i>Идеальный день</span><span><i class="lg part"></i>От 85%</span><span><i class="lg cp"></i>Чекпоинт</span><span><i class="lg has"></i>Есть дела</span></div>';
-calMonths().forEach(function(m){h+='<section class="month"><h3>'+MNN[m[1]]+' <span>'+m[0]+'</span></h3>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk=false,hs=hasItems(s2)?' has':'';
+h+='<div class="lgd"><span><i class="lg full"></i>Идеальный день</span><span><i class="lg part"></i>От 85%</span><span><i class="lg cp"></i>Чекпоинт</span></div>';
+calMonths().forEach(function(m){h+='<section class="month"><h3>'+MNN[m[1]]+' <span>'+m[0]+'</span></h3>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk=false,hs='';
 if(dn2<1||dn2>DAYS)return '<div class="c" data-day="'+s2+'"><span class="d'+(s2<TODAY?' past':'')+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+hs+'">'+k+'</span></div>';
 R.forEach(function(r){if(r.d==dn2)mk=true});
 return '<div class="c" data-day="'+s2+'"><span class="d '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' gl':'')+hs+'">'+(dn2==DAYS?'🏆':k)+'</span></div>'})+'</section>'});
@@ -555,7 +564,7 @@ function projCard(p){var N=p.nodes.length,dn=pDone(p),cur=curNode(p),late=p.dl&&
 var next=fin?'Проект завершён':(cur>-1?'Дальше: '+esc(p.nodes[cur].t):'Добавь первый шаг');
 return '<button class="pcard" data-view="proj:'+p.id+'"><div class="pct"><b>'+esc(p.n)+'</b><span class="cnt">'+dn+'/'+N+'</span></div>'+metro(p)+'<div class="pcb"><span class="nx">'+next+'</span>'+(p.dl?'<span class="due'+(late?' late':'')+'">до '+dstr(p.dl)+'</span>':'')+'</div></button>'}
 function projTab(){var h='<header class="top"><div><h1 class="ttl">Проекты</h1><p class="dt">Чем ты сейчас занят и что дальше</p></div></header>';
-h+='<form class="add big" data-newp="1" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="np" type="text" enterkeyhint="done" maxlength="80" placeholder="Новый проект" aria-label="Название проекта"><select class="sel" aria-label="Тип"><option value="w">Работа</option><option value="c">Творчество</option></select><button class="go" type="submit" aria-label="Создать">'+I.check+'</button></form>';
+h+='<form class="newp" data-newp="1" autocomplete="off"><div class="add"><span class="addi">'+I.plus+'</span><input class="ain" id="np" type="text" enterkeyhint="done" maxlength="80" placeholder="Новый проект" aria-label="Название проекта"><button class="go" type="submit" aria-label="Создать">'+I.check+'</button></div><div class="seg" role="radiogroup" aria-label="Тип проекта"><label><input type="radio" name="pk" value="w" checked><span>Работа</span></label><label><input type="radio" name="pk" value="c"><span>Творчество</span></label></div></form>';
 [['w','Работа'],['c','Творчество']].forEach(function(g){var l=projs().filter(function(p){return p.k==g[0]});
 h+=sh(g[1],l.length||'');
 if(!l.length)h+='<p class="empty card0">Здесь пока пусто. Впиши название сверху и выбери «'+g[1]+'».</p>';
@@ -684,7 +693,7 @@ if(ch){clearTimeout(app.st);app.st=setTimeout(save,300)}});
 app.addEventListener('submit',function(e){var f=e.target.closest&&e.target.closest('form');if(!f)return;e.preventDefault();
 var inp=f.querySelector('input'),v=inp.value.trim();if(!v)return;
 if(f.dataset.tadd!==undefined){var k=f.dataset.tadd;if(!S.todos)S.todos={};(S.todos[SEL]=S.todos[SEL]||[]).push({id:tdUid(),t:v,d:false,p:k=='_'?null:k});save();refocus=inp.id;render()}
-else if(f.dataset.newp!==undefined){var np={id:uid(),n:v,k:f.querySelector('select').value,dl:'',desc:'',nodes:[]};S.proj.push(np);save();view='proj:'+np.id;toTop();render()}
+else if(f.dataset.newp!==undefined){var np={id:uid(),n:v,k:(f.querySelector('input[name=pk]:checked')||{value:'w'}).value,dl:'',desc:'',nodes:[]};S.proj.push(np);save();view='proj:'+np.id;toTop();render()}
 else if(f.dataset.nadd!==undefined){var p=pById(f.dataset.nadd);if(p){p.nodes.push({id:tdUid(),t:v,date:'',d:false});save();refocus='ni';render()}}
 else if(f.dataset.iadd!==undefined){var sp=sById(f.dataset.iadd);if(sp){var ni={id:tdUid(),t:v,body:'',imgs:[]};sp.ideas.push(ni);save();view='idea:'+sp.id+':'+ni.id;toTop();render()}}});
 document.querySelector('.nav').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;view=null;openNode=null;editPay=null;mvTask=null;delP=null;render();toTop()}});

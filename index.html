@@ -11,246 +11,337 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ECEEF2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<style>@font-face{font-family:"Onest";src:url(fonts/onest.woff) format("woff");font-weight:100 900;font-display:swap}@font-face{font-family:"Unbounded";src:url(fonts/unbounded.woff) format("woff");font-weight:200 900;font-display:swap}</style>
 <style>
-html{background:var(--bg)}
-body{margin:0;min-height:100vh}
-
-/* iOS grouped style: system font, inset rounded groups on a grey ground, round check circles, translucent tab bar, one system blue. The 61-tick strip stays as the one custom object. */
+/* 60D. Cool paper ground, one signal blue for action, sun yellow for checkpoints, a colour per creative sphere. Unbounded for numbers and titles, Onest for everything you read. Signature: progress drawn as stations on a line. */
 :root{
-  --bg:#F2F2F7;--surface:#FFFFFF;--surface2:#EFEFF4;
-  --ink:#000000;--mute:#6C6C70;--line:#E1E1E6;--line2:#C7C7CC;
-  --accent:#007AFF;--accent-soft:#E3EFFF;--on-accent:#FFFFFF;
-  --track:#E5E5EA;--st-full:#007AFF;--st-part:#9CC8FF;--st-miss:#DCDCE1;--st-future:#E9E9EE;
-  --gold:#D98E00;--danger:#FF3B30;--bar:rgba(249,249,249,.88);
-  --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
-  --f-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
+  --paper:#ECEEF2;--card:#FFFFFF;--card2:#F3F4F7;--ink:#15171C;--mute:#6C707A;--faint:#A9ADB6;--line:#E4E6EB;--track:#E6E8EE;
+  --blue:#3247FF;--blue-soft:#E3E7FF;--on:#FFFFFF;--sun:#FFBE1A;--sun-soft:#FFF2CC;--danger:#EE3A2C;
+  --s1:#FF5A2C;--s2:#7A5BFF;--s3:#0FB39A;--s4:#F0A100;
+  --navbg:rgba(255,255,255,.82);--shadow:0 10px 30px rgba(21,23,28,.10),0 1px 2px rgba(21,23,28,.06);
+  --f-ui:"Onest",-apple-system,BlinkMacSystemFont,"Helvetica Neue",system-ui,sans-serif;
+  --f-d:"Unbounded","Onest",-apple-system,system-ui,sans-serif;
+  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000000;--surface:#1C1C1E;--surface2:#2C2C2E;
-  --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
-  --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
-  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#2C2C2E;--st-future:#1C1C1E;
-  --gold:#FFD60A;--danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}}
+  --paper:#000000;--card:#16171B;--card2:#212228;--ink:#F4F5F7;--mute:#8F929C;--faint:#5A5D66;--line:#26272D;--track:#2A2C33;
+  --blue:#5F72FF;--blue-soft:#1C2463;--sun:#FFC83A;--sun-soft:#3A2F0C;--danger:#FF5A4D;
+  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;
+  --navbg:rgba(30,31,36,.82);--shadow:0 10px 30px rgba(0,0,0,.5);color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#000000;--surface:#1C1C1E;--surface2:#2C2C2E;
-  --ink:#FFFFFF;--mute:#98989F;--line:#38383A;--line2:#4A4A4D;
-  --accent:#0A84FF;--accent-soft:#12335E;--on-accent:#FFFFFF;
-  --track:#3A3A3C;--st-full:#0A84FF;--st-part:#1F4F8F;--st-miss:#2C2C2E;--st-future:#1C1C1E;
-  --gold:#FFD60A;--danger:#FF453A;--bar:rgba(28,28,30,.88);color-scheme:dark}
+  --paper:#000000;--card:#16171B;--card2:#212228;--ink:#F4F5F7;--mute:#8F929C;--faint:#5A5D66;--line:#26272D;--track:#2A2C33;
+  --blue:#5F72FF;--blue-soft:#1C2463;--sun:#FFC83A;--sun-soft:#3A2F0C;--danger:#FF5A4D;
+  --s1:#FF6A3D;--s2:#8C72FF;--s3:#22C7AD;--s4:#FFB21F;
+  --navbg:rgba(30,31,36,.82);--shadow:0 10px 30px rgba(0,0,0,.5);color-scheme:dark}
 
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:400 17px/1.3 var(--f-body);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
-button,input,select{font:inherit;color:inherit}
+html{background:var(--paper)}
+body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font:400 16px/1.35 var(--f-ui);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 svg{display:block}
-#app{max-width:520px;margin:0 auto;padding-block:8px calc(90px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+p{margin:0}
+#app{max-width:520px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(112px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 
-/* type */
-.ttl{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1.12;letter-spacing:.37px;margin:10px 0 0;text-wrap:balance}
-.sub{color:var(--mute);font-size:15px;margin-top:4px}
-.lnk{border:0;background:none;padding:0;color:var(--accent);font-size:15px}
-.hint{color:var(--mute);font-size:13px;margin:8px 16px 0}
-.gh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:24px 16px 7px;color:var(--mute);font-size:13px;font-variant-numeric:tabular-nums}
-.gh b{font-weight:400}
-
-/* tally strip */
-.tally{display:flex;gap:2px;height:28px;align-items:flex-end;margin:6px 0 10px}
-.tk{flex:1;min-width:0;height:18px;border-radius:2px;background:var(--st-future);position:relative}
-.tk.full{background:var(--st-full)}
-.tk.part{background:var(--st-part)}
-.tk.miss{background:var(--st-miss)}
-.tk.now{height:28px;background:var(--ink)}
-.tk.cp::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:3px;border-radius:2px;background:var(--mute)}
-
-/* stat tiles */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
-.stat{min-width:0;border:0;border-radius:16px;background:var(--surface);padding:12px 12px 12px 16px;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:6px}
-.stat svg{grid-column:2;grid-row:1/3;width:16px;height:16px;color:var(--line2)}
-.sl{font-size:13px;color:var(--mute)}
-.sv{font-size:22px;font-weight:700;letter-spacing:.3px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* reward card */
-.rc{background:var(--surface);border-radius:16px;padding:16px;margin-top:12px}
-.rc.av{background:var(--accent);color:var(--on-accent)}
-.rh{display:flex;gap:12px;align-items:center;margin-bottom:14px}
-.tile{flex:none;width:44px;height:44px;border-radius:11px;background:var(--surface2);display:grid;place-items:center;font-size:22px}
-.rc.av .tile{background:rgba(255,255,255,.25)}
-.rt{font-size:20px;font-weight:700;line-height:1.2;letter-spacing:.2px}
-.rs{font-size:14px;color:var(--mute);margin-top:1px}
-.rc.av .rs{color:inherit;opacity:.88}
-.mrow{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--mute);font-variant-numeric:tabular-nums}
-.rc.av .mrow{color:inherit;opacity:.92}
-.track{height:6px;border-radius:3px;background:var(--track);overflow:hidden;margin:7px 0 13px}
-.track:last-of-type{margin-bottom:0}
-.track i{display:block;height:100%;border-radius:3px;background:var(--accent)}
-.track.m i{background:var(--ink)}
-.rc.av .track{background:rgba(255,255,255,.3)}
-.rc.av .track i,.rc.av .track.m i{background:var(--on-accent)}
-.got{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.pill{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 12px 0 9px;border-radius:15px;background:var(--surface);font-size:14px}
-.pill svg{width:14px;height:14px;color:var(--accent)}
+/* headings */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:14px 0 18px}
+.ttl{font:600 30px/1.08 var(--f-d);letter-spacing:-.4px;margin:0}
+.ttl .of{font-size:18px;color:var(--faint);margin-left:4px;letter-spacing:0}
+.dt{color:var(--mute);font-size:15px;margin-top:6px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:26px 4px 10px}
+.sh h2{font:600 18px/1.2 var(--f-ui);margin:0}
+.sh span{color:var(--mute);font-size:14px;font-variant-numeric:tabular-nums}
+.pts{font-weight:600;color:var(--blue);margin-right:6px}
+.hint{color:var(--mute);font-size:13px;margin:10px 4px 0;line-height:1.4}
+.note{color:var(--mute);font-size:14px;padding:14px 0 6px}
+.empty{color:var(--mute);font-size:15px;padding:16px 0}
+.card0{background:var(--card);border-radius:20px;padding:18px;border:1.5px dashed var(--line)}
+.warn{color:var(--danger);font-size:14px;margin:6px 4px 0}
 
 /* buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;margin-top:14px;border:0;border-radius:13px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:17px}
-.btn:active{opacity:.8}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border:0;border-radius:16px;background:var(--blue);color:var(--on);font-weight:600;font-size:16px;transition:transform .12s}
+.btn:active{transform:scale(.97)}
 .btn svg{width:18px;height:18px}
-.btn.inv{background:var(--on-accent);color:var(--accent)}
-.btn.sm{width:auto;height:40px;margin-top:0;padding:0 18px;border-radius:10px;font-size:16px}
-.btn.dn{background:var(--surface2);color:var(--danger)}
-.btn.out{background:var(--accent-soft);color:var(--accent)}
-.ib{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--mute);display:grid;place-items:center}
+.btn.big{display:flex;width:100%;height:54px;margin-top:12px;font-size:17px;border-radius:18px}
+.btn.soft{background:var(--card);color:var(--blue)}
+.btn.ink{display:flex;width:100%;margin-top:14px;background:var(--ink);color:var(--paper)}
+.btn.dn{background:var(--danger);color:#fff}
+.btn.soft.dn{background:var(--card);color:var(--danger)}
+.btn.wide{display:flex;width:100%;margin-top:28px}
+.frow{display:flex;gap:8px;align-items:center;margin-top:10px}
+.frow.end{margin-top:28px}
+.frow .btn{flex:1}
+.ib{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--mute);display:grid;place-items:center}
 .ib svg{width:20px;height:20px}
-.ib:active{background:var(--surface2)}
-.back{display:inline-flex;align-items:center;gap:2px;height:44px;margin-left:-8px;padding:0 12px 0 2px;border:0;background:transparent;color:var(--accent);font-size:17px}
-.back svg{width:24px;height:24px}
+.ib.sm{width:34px;height:34px}
+.ib.sm svg{width:17px;height:17px}
+.ib:active{background:var(--card2)}
+.ib:disabled{opacity:.3}
+.chip{flex:none;height:34px;padding:0 14px;border:0;border-radius:17px;background:var(--blue-soft);color:var(--blue);font-weight:600;font-size:14px}
+.back{display:inline-flex;align-items:center;gap:2px;height:40px;margin:2px 0 4px -8px;padding:0 12px 0 2px;border:0;background:transparent;color:var(--blue);font-size:16px;font-weight:500}
+.back svg{width:22px;height:22px}
 
-/* task list */
-.card{background:var(--surface);border-radius:16px;padding:0 16px;margin-top:0}
-.note{font-size:14px;color:var(--mute);padding:12px 0 4px}
-.t{position:relative;display:flex;align-items:center;gap:6px;min-height:58px}
-.t::after{content:"";position:absolute;left:42px;right:0;bottom:0;height:.5px;background:var(--line)}
-.t:last-child::after{display:none}
-.cb{position:relative;flex:none;display:grid;place-items:center;width:44px;height:56px;margin-left:-8px;cursor:pointer}
-.cb input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
-.bx{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center;color:var(--on-accent);transition:background-color .12s,border-color .12s}
-.bx svg{width:15px;height:15px;opacity:0}
-.cb input:checked+.bx{background:var(--accent);border-color:var(--accent)}
-.cb input:checked+.bx svg{opacity:1}
-.cb input:focus-visible+.bx{outline:2px solid var(--accent);outline-offset:2px}
-.cb input:disabled+.bx{opacity:.45}
-.nm{min-width:0;display:flex;flex-direction:column}
-.n{font-size:17px;line-height:1.25}
-.t.on .n{color:var(--mute)}
-.tag{font-size:13px;color:var(--mute);margin-top:1px}
-.pt{flex:none;min-width:28px;text-align:right;color:var(--mute);font-size:16px;font-variant-numeric:tabular-nums}
-.t.on .pt{opacity:.55}
-.sel{flex:none;appearance:none;-webkit-appearance:none;height:34px;padding:0 26px 0 12px;border:0;border-radius:9px;font-size:16px;background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5-5 5 5M7 14l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 6px center/15px}
-.t.away{opacity:.62}
-.t.away .n{color:var(--mute)}
- .nmb{flex:1;min-width:0;display:flex;align-items:center;gap:6px;min-height:56px;padding:0 0 0 6px;border:0;background:transparent;text-align:left;cursor:pointer;color:inherit}
-.nmb .nm{flex:1}
-.chev{flex:none;width:14px;height:14px;color:var(--line2);transition:transform .15s}
+/* groups and rows */
+.grp{background:var(--card);border-radius:22px;padding:0 16px}
+.grp.pad{padding:4px 16px 14px}
+.row{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;width:100%;border:0;background:transparent;padding:0;text-align:left}
+.row+.row::before,.row+.add::before,.subs+.row::before,.row+.subs::before{content:"";position:absolute;top:0;left:38px;right:0;height:1px;background:var(--line)}
+.row.kd+.row::before,.row.pay+.row::before,.row.idea+.row::before,.row.link+.row::before{left:38px}
+.rt{flex:1;min-width:0;font-size:16px;line-height:1.3;overflow-wrap:anywhere;padding:10px 0}
+.rt small{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.row.on .rt{color:var(--mute)}
+.row.on>.rt{text-decoration:line-through;text-decoration-color:var(--faint)}
+.rtb{flex:1;min-width:0;display:flex;align-items:center;gap:6px;border:0;background:transparent;padding:0;text-align:left;color:inherit}
+.chev{flex:none;width:15px;height:15px;color:var(--faint);transition:transform .18s}
 .exp .chev{transform:rotate(90deg)}
-.t.exp::after{display:none}
-.sts{position:relative;padding:0 0 12px 44px}
-.sts::after{content:"";position:absolute;left:42px;right:0;bottom:0;height:.5px;background:var(--line)}
-.sts:last-child::after{display:none}
-.sts.own{padding:4px 0 12px}
-.sts.own::after{display:none}
-.st{display:flex;align-items:center;gap:6px;min-height:44px}
-.st .cb{width:36px;height:44px;margin-left:-6px}
-.st .bx{width:22px;height:22px}
-.st .bx svg{width:12px;height:12px}
-.st .tx{flex:1;min-width:0;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
-.st.on .tx{color:var(--mute);text-decoration:line-through}
-.st .ib{width:36px;height:36px}
-.own .st{min-height:50px}
-.own .st .bx{width:26px;height:26px}
-.own .st .tx{font-size:17px}
-.addf{display:flex;gap:8px;align-items:center;margin-top:6px}
-.addf .inp{height:40px;font-size:16px}
-.addb{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
-.addb svg{width:18px;height:18px}
+.pt{flex:none;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:var(--card2);color:var(--mute);font-size:13px;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.row.on .pt{background:var(--blue-soft);color:var(--blue)}
+.sel{flex:none;appearance:none;-webkit-appearance:none;height:32px;padding:0 24px 0 10px;border:0;border-radius:10px;font-size:14px;font-weight:600;background:var(--card2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F929C' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5-5 5 5M7 14l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 6px center/13px}
+.row.away{opacity:.6}
+.subs{position:relative;padding:0 0 6px 38px}
+.subs .row{min-height:48px}
+.subs .row+.row::before{left:34px}
+
+/* check circle */
+.cb{position:relative;flex:none;display:grid;place-items:center;width:28px;height:44px;cursor:pointer}
+.cb input{position:absolute;inset:-6px -8px;width:auto;height:auto;margin:0;opacity:0;cursor:pointer;z-index:1}
+.bx{width:26px;height:26px;border-radius:50%;border:2px solid var(--faint);display:grid;place-items:center;color:var(--on);transition:background-color .15s,border-color .15s}
+.bx svg{width:14px;height:14px;opacity:0;transform:scale(.4);transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .12s}
+.cb input:checked+.bx{background:var(--blue);border-color:var(--blue)}
+.cb input:checked+.bx svg{opacity:1;transform:none}
+.cb input:focus-visible+.bx{outline:2px solid var(--blue);outline-offset:2px}
+.cb input:disabled+.bx{opacity:.35}
+.subs .bx{width:22px;height:22px}
+
+/* add field */
+.add{position:relative;display:flex;align-items:center;gap:10px;min-height:56px}
+.addi{flex:none;width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
+.addi svg{width:15px;height:15px}
+.ain{flex:1;min-width:0;height:44px;border:0;background:transparent;font-size:16px;padding:0}
+.ain::placeholder{color:var(--faint)}
+.go{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .15s}
+.go svg{width:15px;height:15px}
+.add:focus-within .go{opacity:1;pointer-events:auto}
+.add.big{background:var(--card);border-radius:22px;padding:6px 8px 6px 14px}
+.add.big .sel{background-color:var(--card2);font-size:13px;padding:0 22px 0 9px;height:30px}
+.inp{width:100%;min-width:0;height:48px;padding:0 14px;border:0;border-radius:14px;background:var(--card2);font-size:16px}
+select.inp{appearance:none;-webkit-appearance:none;margin-top:10px}
+.pform{padding:10px 0 4px}
+.frow .inp{flex:1}
+.inp.num{flex:none;width:130px;height:38px;text-align:right;font-weight:600}
+.cur{color:var(--mute)}
+
+/* challenge strip */
+.beads{display:flex;gap:2px;align-items:center;height:26px;margin:2px 0 14px}
+.bd{flex:1;min-width:0;height:14px;border-radius:3px;background:var(--track)}
+.bd.full{background:var(--blue)}
+.bd.part{background:var(--blue);opacity:.45}
+.bd.miss{background:var(--track)}
+.bd.cp{height:22px;background:var(--sun)}
+.bd.cp.full{background:var(--blue)}
+.bd.now{height:26px;background:var(--ink)}
+.beads.lt{margin:18px 0 0}
+.beads.lt .bd{background:rgba(255,255,255,.28)}
+.beads.lt .bd.cp{background:var(--sun)}
+
+/* launch card (before start) */
+.launch{position:relative;overflow:hidden;background:var(--blue);color:#fff;border-radius:28px;padding:20px 20px 18px;display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:center}
+.launch::after{content:"";position:absolute;right:-52px;top:-58px;width:140px;height:140px;border-radius:50%;background:var(--sun);opacity:.95}
+.lnum{position:relative;z-index:1;font:700 76px/0.9 var(--f-d);letter-spacing:-3px}
+.ltx{position:relative;z-index:1;padding-right:64px}
+.ltx b{display:block;font:600 18px/1.2 var(--f-d)}
+.ltx span{display:block;font-size:14px;opacity:.85;margin-top:6px;line-height:1.35;max-width:24ch}
+.launch .beads{grid-column:1/-1;position:relative;z-index:1}
+
+/* challenge stats + reward */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile2{position:relative;min-width:0;border:0;border-radius:20px;background:var(--card);padding:14px 30px 14px 16px;text-align:left}
+.tile2 span{display:block;font-size:13px;color:var(--mute)}
+.tile2 b{display:block;font:600 20px/1.2 var(--f-d);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile2 svg{position:absolute;right:12px;top:50%;margin-top:-8px;width:16px;height:16px;color:var(--faint)}
+.rw{background:var(--card);border-radius:22px;padding:16px;margin-top:10px}
+.rw.av{background:var(--sun);color:#15171C}
+.rwt{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.emo{flex:none;width:48px;height:48px;border-radius:15px;background:var(--sun-soft);display:grid;place-items:center;font-size:24px}
+.emo.sm{width:40px;height:40px;border-radius:12px;font-size:20px}
+.rw.av .emo{background:rgba(255,255,255,.55)}
+.rwm b{display:block;font:600 17px/1.2 var(--f-d)}
+.rwm span{display:block;font-size:13px;color:var(--mute);margin-top:3px}
+.rw.av .rwm span,.rw.av .rwr{color:rgba(21,23,28,.7)}
+.rwr{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:8px;font-variant-numeric:tabular-nums}
+.bar{height:7px;border-radius:4px;background:var(--track);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--blue)}
+.rw.av .bar{background:rgba(21,23,28,.15)}
+.rw.av .bar i{background:#15171C}
+.got{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;background:var(--card);font-size:14px;font-weight:500}
 
 /* mover */
-.mvbox{background:var(--surface2);border-radius:13px;padding:10px 10px 12px;margin:2px 0 12px}
-.mvh{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:16px;padding-left:6px}
-.mvbox .mname{font-size:14px;margin:8px 6px 6px}
-.mvbox .c{font-size:16px;height:42px}
-.mvbox .d{width:38px;height:38px}
-.mvbox .d.sl{background:var(--accent-soft);outline:0}
+.mvbox{background:var(--card2);border-radius:18px;padding:10px 10px 12px;margin:2px 0 12px}
+.mvh{display:flex;justify-content:space-between;align-items:center;font-weight:600;padding-left:6px}
+.mvbox .mname{font-weight:600;font-size:14px;margin:8px 6px 6px}
+.mvbox .c{height:40px}
+.mvbox .d{width:36px;height:36px;font-size:15px}
 
 /* calendar */
-.mcard{background:var(--surface);border-radius:16px;padding:14px 10px 12px;margin-top:12px}
-.mname{font-weight:700;font-size:18px;margin:2px 8px 10px}
+.lgd{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 4px 6px;font-size:13px;color:var(--mute)}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:12px;height:12px;border-radius:50%;display:block}
+.lg.full{background:var(--blue)}
+.lg.part{background:var(--blue);opacity:.45}
+.lg.cp{background:var(--sun)}
+.lg.has{width:6px;height:6px;background:var(--ink)}
+.month{background:var(--card);border-radius:24px;padding:16px 10px 12px;margin-top:12px}
+.month h3{font:600 18px/1.2 var(--f-d);margin:0 8px 12px}
+.month h3 span{color:var(--faint);font-weight:500}
 .g7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.wd{font-size:12px;color:var(--mute);text-align:center;padding-bottom:4px}
-.c{display:grid;place-items:center;height:46px;font-size:17px;line-height:1;font-variant-numeric:tabular-nums;cursor:pointer}
+.wd{font-size:12px;color:var(--faint);text-align:center;padding-bottom:6px}
+.c{display:grid;place-items:center;height:46px;font-size:16px;line-height:1;font-variant-numeric:tabular-nums;cursor:pointer}
 .c.e{visibility:hidden}
 .c.out{opacity:.3;cursor:default}
-.d{position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:50%}
-.d.part{background:var(--st-part)}
-.d.full{background:var(--st-full);color:var(--on-accent)}
-.d.td{box-shadow:inset 0 0 0 2px var(--accent)}
-.d.gl{color:var(--gold);font-weight:700}
-.d.sl{outline:2px solid var(--ink);outline-offset:1px}
-.lgd{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 4px 0;font-size:13px;color:var(--mute)}
-.lgd span{display:inline-flex;align-items:center;gap:6px}
-.lgd i{width:12px;height:12px;border-radius:50%;display:block}
-.kd{position:relative;display:flex;align-items:center;gap:12px;min-height:64px}
-.kd::after{content:"";position:absolute;left:52px;right:0;bottom:0;height:.5px;background:var(--line)}
-.kd:last-child::after{display:none}
-.kd .tile{width:40px;height:40px;font-size:20px;border-radius:10px}
-.kd .tx{flex:1;min-width:0}
-.kd b{display:block;font-weight:400;font-size:17px}
-.kd .ok{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
-.kd .ok svg{width:13px;height:13px}
+.d{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;font-weight:500}
+.d.past,.d.miss{color:var(--faint)}
+.d.part{background:var(--blue-soft);color:var(--blue)}
+.d.full{background:var(--blue);color:#fff}
+.d.gl{background:var(--sun-soft);color:#9A6A00;font-weight:700}
+.d.gl.full{background:var(--blue);color:#fff}
+.d.td{box-shadow:inset 0 0 0 2px var(--ink)}
+.d.sl:not(.td){outline:2px solid var(--blue);outline-offset:2px}
+.d.has::after{content:"";position:absolute;bottom:4px;left:50%;margin-left:-2.5px;width:5px;height:5px;border-radius:50%;background:currentColor}
+.row.kd .emo{margin:8px 0}
+.okd{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center}
+.okd svg{width:13px;height:13px}
 
-/* detail pages */
-.hero{background:var(--surface);border-radius:16px;padding:16px;margin-top:16px}
+/* hero blocks */
+.hero{position:relative;overflow:hidden;background:var(--card);border-radius:26px;padding:18px;margin-top:6px}
 .lbl{color:var(--mute);font-size:14px}
-.big{font-family:var(--f-display);font-weight:700;font-size:clamp(32px,10vw,40px);line-height:1.1;letter-spacing:.3px;margin-top:2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;padding-top:12px;border-top:.5px solid var(--line)}
-.fg b{display:block;font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.fg span{font-size:13px;color:var(--mute)}
-.pr{position:relative;display:flex;align-items:center;gap:8px;min-height:52px;cursor:pointer}
-.pr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.5px;background:var(--line)}
-.pr:last-child::after{display:none}
-.pd{flex:1}
-.pa{color:var(--mute);font-variant-numeric:tabular-nums}
-.pr svg{width:16px;height:16px;color:var(--line2)}
-.pform{padding:12px 0}
-.frow{display:flex;gap:8px}
-.frow2{display:flex;gap:8px;align-items:center;margin-top:10px}
-.inp{flex:1 1 0;min-width:0;height:44px;padding:0 12px;border:0;border-radius:10px;background:var(--surface2);font-size:17px}
-.cat{position:relative;padding:12px 0}
-.cat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.5px;background:var(--line)}
-.cat:last-child::after{display:none}
-.cat .tr{display:flex;justify-content:space-between;gap:8px}
-.cat .tr b{font-weight:600}
-.cat .tr span{color:var(--mute);font-size:15px;font-variant-numeric:tabular-nums}
-.cat .track{height:5px;margin:8px 0}
-.cat .mrow{margin-top:2px}
-.empty{padding:16px 0;color:var(--mute);font-size:15px}
+.big{font:600 clamp(32px,10vw,42px)/1.05 var(--f-d);letter-spacing:-1px;margin-top:4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.big .of{font-size:.5em;color:var(--faint);letter-spacing:0}
+.goal{color:var(--mute);font-size:14px;margin-top:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.split b{display:block;font:600 17px/1.2 var(--f-d)}
+.split span{display:block;font-size:13px;color:var(--mute);margin-top:3px}
+.hrow{display:flex;justify-content:space-between;align-items:baseline}
+.pc{font:600 16px var(--f-d);color:var(--blue)}
+.stat{padding:12px 0}
+.stat+.stat{border-top:1px solid var(--line)}
+.str{display:flex;justify-content:space-between;gap:8px}
+.str b{font-weight:600}
+.str span{color:var(--mute);font-size:14px}
+.str.sm{margin-top:6px;font-size:13px}
 
+/* metro line: the signature */
+.metro{display:flex;align-items:center;margin:14px 0 2px;height:14px;position:relative}
+.metro::before{content:"";position:absolute;left:6px;right:6px;top:50%;height:2px;margin-top:-1px;background:var(--track)}
+.metro i{position:relative;flex:1;display:flex;justify-content:center}
+.metro i::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--card);box-shadow:inset 0 0 0 2px var(--faint)}
+.metro i.dn::before{background:var(--blue);box-shadow:none}
+.metro i.cu::before{background:var(--card);box-shadow:inset 0 0 0 3px var(--blue);width:14px;height:14px}
+.metro i.dn+i.dn::after,.metro i.dn+i.cu::after{content:"";position:absolute;right:50%;width:100%;top:50%;height:2px;margin-top:-1px;background:var(--blue);z-index:-0}
+.metro i::before{z-index:1}
+.metro.xl{height:18px;margin-top:16px}
+.metro.xl i::before{width:16px;height:16px}
+.metro.xl i.cu::before{width:18px;height:18px;box-shadow:inset 0 0 0 4px var(--blue)}
+.metro.empty::before{left:0;right:0;background:repeating-linear-gradient(90deg,var(--track) 0 6px,transparent 6px 12px)}
 
-/* projects, money, notes */
-.ttlin{display:block;width:100%;min-width:0;height:auto;padding:8px 0;margin-top:2px;background:transparent;border:0;border-radius:0;font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1.15;letter-spacing:.3px}
-.ta{font-family:inherit;display:block;width:100%;min-height:140px;margin-top:12px;padding:12px;border:0;border-radius:12px;background:var(--surface);font-size:17px;line-height:1.4;resize:none;overflow:hidden}
-.fr{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px}
-.fr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.5px;background:var(--line)}
-.fr:last-child::after{display:none}
-.inp.dt{flex:none;width:auto;height:36px;font-size:16px;padding:0 8px}
-.spm{flex:1;min-width:0;padding:10px 0}
-.spm .tr{display:flex;justify-content:space-between;gap:8px}
-.spm .tr b{font-weight:600}
-.spm .tr span{color:var(--mute);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.spm .track{height:5px;margin:8px 0 2px}
-.nd{position:relative;padding-bottom:8px}
-.nd::after{content:"";position:absolute;left:36px;right:0;bottom:0;height:.5px;background:var(--line)}
-.nd:last-of-type::after{display:none}
-.nd.lk .tx{color:var(--mute)}
-.nd.on .tx{color:var(--mute);text-decoration:line-through}
-.ndr{display:flex;align-items:center;gap:4px;padding-left:30px}
-.ndr .ib{width:36px;height:36px}
-.ndr .ib svg{width:18px;height:18px}
-.imgs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+/* project cards */
+.plist{display:grid;gap:10px}
+.pcard{display:block;width:100%;text-align:left;border:0;background:var(--card);border-radius:22px;padding:16px 16px 14px;transition:transform .12s}
+.pcard:active{transform:scale(.985)}
+.pct{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pct b{font:600 17px/1.25 var(--f-ui);min-width:0;overflow-wrap:anywhere}
+.cnt{flex:none;font:600 15px var(--f-d);color:var(--blue)}
+.pcb{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+.nx{min-width:0;font-size:14px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.due{flex:none;display:inline-block;height:24px;line-height:24px;padding:0 9px;border-radius:12px;background:var(--card2);color:var(--mute);font-size:12.5px;font-weight:600}
+.due.late{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+
+/* project page */
+.tin{display:block;width:100%;border:0;background:transparent;padding:4px 0;margin:4px 0 0;font:600 26px/1.15 var(--f-d);letter-spacing:-.4px}
+.tin::placeholder{color:var(--faint)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.pchip{position:relative;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:18px;background:var(--card);font-size:14px}
+.pchip span{color:var(--mute)}
+.pchip select{width:auto}
+.pchip select,.pchip input{border:0;background:transparent;font-weight:600;font-size:14px;padding:0;-webkit-appearance:none;appearance:none;min-width:0}
+.pchip input[type=date]{min-width:96px}
+.quest{background:var(--card);border-radius:22px;padding:6px 16px 4px}
+.qn{position:relative;display:flex;gap:12px;padding:12px 0 10px}
+.qrail{position:relative;flex:none;width:28px;display:flex;justify-content:center}
+.qrail::after{content:"";position:absolute;top:44px;bottom:-12px;left:50%;width:2px;margin-left:-1px;background:var(--track)}
+.qn.dn .qrail::after{background:var(--blue)}
+.qrail .cb{height:32px;align-self:flex-start}
+.qn.cu .bx{border-color:var(--blue);border-width:3px;animation:pulse 2.2s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--blue) 45%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.qbody{flex:1;min-width:0}
+.qt{font-size:16px;font-weight:500;line-height:1.3;padding-top:5px;overflow-wrap:anywhere}
+.qn.dn .qt{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--faint)}
+.qn.lk .qt{color:var(--mute)}
+.qm{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--mute);margin-top:4px}
+.qn.cu .qm{color:var(--blue);font-weight:600}
+.qa{display:none;align-items:center;gap:2px;margin:6px 0 0 -6px}
+.mini{position:relative;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;margin-right:auto;border-radius:16px;background:var(--card2);color:var(--mute);font-size:13px;font-weight:500;overflow:hidden}
+.mini svg{width:15px;height:15px}
+.mini input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:0;cursor:pointer}
+.qadd{border-top:1px solid var(--line)}
+.ta{display:block;width:100%;min-height:120px;padding:14px 16px;border:0;border-radius:20px;background:var(--card);font-size:16px;line-height:1.45;resize:none;overflow:hidden}
+.ta::placeholder{color:var(--faint)}
+.ta.note{background:transparent;padding:6px 0;margin-top:6px;font-size:17px;line-height:1.5}
+
+/* money */
+.mhero{padding-bottom:16px}
+.stack{display:flex;height:14px;border-radius:7px;background:var(--track);overflow:hidden;margin-top:16px;gap:2px}
+.stack i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:13px;color:var(--mute)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.leg i{width:9px;height:9px;border-radius:3px;display:block}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stile{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;min-width:0;border:0;background:var(--card);border-radius:24px;padding:14px 14px 14px;text-align:left;transition:transform .12s}
+.stile:active{transform:scale(.97)}
+.blob{position:absolute;border-radius:50%;background:var(--c);pointer-events:none}
+.stile .blob{right:-34px;top:-34px;width:96px;height:96px;opacity:.16}
+.sr{position:relative;width:48px;height:48px;margin-bottom:14px}
+.ring{width:48px;height:48px}
+.sr em{position:absolute;inset:0;display:grid;place-items:center;font:600 11px var(--f-d);font-style:normal}
+.stile b{font:600 15px/1.2 var(--f-d)}
+.stile .sm{font-size:13px;color:var(--mute);margin-top:6px;line-height:1.35;font-variant-numeric:tabular-nums}
+.stile .ic{margin-top:10px;font-size:12px;font-weight:600;color:var(--c)}
+.row.link .rt{font-weight:500}
+.dot{flex:none;width:12px;height:12px;border-radius:50%;margin:0 8px 0 8px}
+.row.pay{cursor:pointer}
+
+/* sphere page */
+.sphhead{position:relative;overflow:hidden;background:var(--card);border-radius:0 0 30px 30px;margin:calc(-10px - env(safe-area-inset-top,0px)) -16px 0;padding:calc(10px + env(safe-area-inset-top,0px)) 20px 22px}
+.sphhead .b1{right:-60px;top:-50px;width:200px;height:200px;opacity:.9}
+.sphhead .ttl,.sphhead .big,.sphhead .goal,.sphhead .back,.sphhead .bar{position:relative}
+.sphhead .ttl{margin-top:8px}
+.sphhead .big{margin-top:14px}
+.sphhead .bar{margin-top:14px;height:9px}
+.row.idea{min-height:64px}
+.th{flex:none;width:40px;height:40px;border-radius:12px;object-fit:cover;opacity:1}
+span.th{opacity:.22}
+.row.idea+.row::before,.row.idea+.add::before{left:52px}
+.tagc{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:14px;background:var(--card);font-size:13px;font-weight:600;margin-top:4px}
+.tagc i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.imgs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .im{position:relative}
-.im img{display:block;width:100%;border-radius:12px}
-.im .ib{position:absolute;top:4px;right:4px;width:32px;height:32px;background:rgba(0,0,0,.55);color:#fff}
-.warn{color:var(--danger)}
-.d.has::after{content:"";position:absolute;bottom:4px;left:50%;margin-left:-2px;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.55}
+.im img{display:block;width:100%;border-radius:16px}
+.im .ib{position:absolute;top:6px;right:6px;width:30px;height:30px;background:rgba(0,0,0,.55);color:#fff}
+.im .ib svg{width:15px;height:15px}
 input[type=file]{display:none}
-.tag.dg{color:var(--danger)}
 
-/* tab bar */
-.nav{position:fixed;z-index:20;left:0;right:0;bottom:0;display:flex;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--line2);padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
-.nav button{flex:1;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:var(--mute);font-size:10.5px;font-weight:500}
-.nav svg{width:26px;height:26px}
-.nav button.on{color:var(--accent)}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* tab bar: floating capsule, always on screen */
+.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(calc(100% - 24px),440px);height:64px;display:flex;padding:6px;gap:4px;border-radius:32px;background:var(--navbg);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);box-shadow:var(--shadow)}
+.nav button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;border-radius:26px;background:transparent;color:var(--mute);font-size:11px;font-weight:600;transition:background-color .18s,color .18s}
+.nav svg{width:23px;height:23px}
+.nav button.on{background:var(--blue-soft);color:var(--blue)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.qn.op .qa{display:flex}
+.qtb{display:block;width:100%;border:0;background:transparent;padding:0;text-align:left;color:inherit}
+.qtb .qt::after{content:"";display:inline-block;width:6px;height:6px;margin-left:8px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:translateY(-3px) rotate(45deg);transition:transform .15s}
+.qn.op .qtb .qt::after{transform:translateY(0) rotate(-135deg)}
 </style>
 
 </head>
@@ -350,162 +441,185 @@ function gridHtml(y,mo,fn){var off=(new Date(y,mo,1).getDay()+6)%7,len=new Date(
 for(var i=0;i<off;i++)h+='<div class="c e"></div>';
 for(var k=1;k<=len;k++){var s=fmt(new Date(y,mo,k));h+=fn(s,k,dayNo(s))}return h+'</div>'}
 
-function tallyHtml(){var h='<div class="tally" role="img" aria-label="Дни челленджа">';
-for(var n=1;n<=DAYS;n++){var s=dateOf(n),st=s==TODAY?'now':dayState(s),cp=R.some(function(r){return r.d==n});
-h+='<i class="tk '+st+(cp?' cp':'')+'"></i>'}
-return h+'</div>'}
-function statsHtml(tot,bal){return '<div class="stats"><button class="stat" data-view="stars"><span class="sl">Баллы</span><span class="sv">'+tot+'</span>'+I.chevR+'</button><button class="stat" data-view="money"><span class="sl">Остаток</span><span class="sv">'+money(bal)+'</span>'+I.chevR+'</button></div>'}
-
-function rewardHtml(tot,bal,tn){var nx=-1,i,h='';for(i=0;i<4;i++)if(!S.bought[i]){nx=i;break}
-if(nx<0)return '<div class="rc"><div class="rh"><div class="tile">🏆</div><div><div class="rt">Все награды получены</div></div></div></div>';
-var r=R[nx],pp=Math.min(100,tot/r.at*100),mp=Math.min(100,Math.max(0,bal)/r.c*100),ok=tot>=r.at&&bal>=r.c&&tn>=r.d;
-h+='<div class="rc'+(ok?' av':'')+'"><div class="rh"><div class="tile">'+r.e+'</div><div><div class="rt">'+r.n+'</div><div class="rs">'+(ok?'Доступно':'Следующая награда · '+dstr(dateOf(r.d)))+'</div></div></div>';
-h+='<div class="mrow"><span>Баллы</span><span>'+tot+' из '+r.at+'</span></div><div class="track"><i style="width:'+pp+'%"></i></div>';
-h+='<div class="mrow"><span>Деньги</span><span>'+money(Math.max(0,bal))+' из '+money(r.c)+'</span></div><div class="track m"><i style="width:'+mp+'%"></i></div>';
-if(ok)h+='<button class="btn inv" data-buy="'+nx+'">Купить и списать '+money(r.c)+'</button>';
-h+='</div>';
-var got=R.filter(function(x,j){return S.bought[j]});
-if(got.length)h+='<div class="got">'+got.map(function(x){return '<span class="pill">'+I.check+x.n+'</span>'}).join('')+'</div>';
-return h}
-
-function moverHtml(){return '<div class="mvbox"><div class="mvh"><span>Перенести на день</span><button class="ib" data-mv="" aria-label="Закрыть">'+I.close+'</button></div>'+monthsList().map(function(m){return '<div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k2,dn2){var ok2=dn2>=1&&dn2<=DAYS&&s2!=SEL;return '<div class="c'+(ok2?'':' out')+'"'+(ok2?' data-mvto="'+s2+'"':'')+'><span class="d'+(s2==SEL?' sl':'')+'">'+k2+'</span></div>'})}).join('')+'</div>'}
-
+var openNode=null;
+var SC={custom:'var(--s1)',paint:'var(--s2)',dream:'var(--s3)',cloth:'var(--s4)'};
+function scol(id){return SC[id]||'var(--blue)'}
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function tdUid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
 function subsOf(d,k){return tdl(d).filter(function(x){return x.p===k})}
-function stRow(x){return '<div class="st'+(x.d?' on':'')+'"><label class="cb"><input type="checkbox" data-td="'+x.id+'"'+(x.d?' checked':'')+'><span class="bx">'+I.check+'</span></label><span class="tx">'+esc(x.t)+'</span><button class="ib" data-tdel="'+x.id+'" aria-label="Удалить">'+I.close+'</button></div>'}
-function addForm(k){return '<form class="addf" data-tadd="'+k+'" autocomplete="off"><input class="inp" id="ti-'+String(k).replace(/[^\w]/g,'_')+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(k=='_'?'Новая задача':'Добавить задачу')+'" aria-label="Новая задача"><button class="addb" type="submit" aria-label="Добавить">'+I.plus+'</button></form>'}
-function nodeStRow(o){var p=o.p,x=o.x,ok=canToggle(p,o.i);return '<div class="st'+(x.d?' on':'')+'"><label class="cb"><input type="checkbox" data-nd="'+p.id+':'+x.id+'"'+(x.d?' checked':'')+(ok?'':' disabled')+'><span class="bx">'+I.check+'</span></label><span class="tx">'+esc(x.t)+'<span class="tag" style="display:block">'+esc(p.n)+(ok||x.d?'':' · закрыто')+'</span></span></div>'}
+function sh(t,r){return '<div class="sh"><h2>'+t+'</h2>'+(r!==undefined&&r!==''?'<span>'+r+'</span>':'')+'</div>'}
+function bar(p,c){return '<div class="bar"><i style="width:'+Math.max(0,Math.min(100,p))+'%'+(c?';background:'+c:'')+'"></i></div>'}
+function ring(p,c){var r=17,L=2*Math.PI*r,v=Math.max(0,Math.min(100,p));return '<svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="'+r+'" fill="none" stroke="var(--track)" stroke-width="5"/><circle cx="22" cy="22" r="'+r+'" fill="none" stroke="'+c+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+(L*v/100).toFixed(1)+' '+L.toFixed(1)+'" transform="rotate(-90 22 22)"/></svg>'}
+function cbx(attr,on,dis,label){return '<label class="cb"><input type="checkbox" '+attr+(on?' checked':'')+(dis?' disabled':'')+(label?' aria-label="'+esc(label)+'"':'')+'><span class="bx">'+I.check+'</span></label>'}
+function back(to,label){return '<button class="back" data-view="'+(to||'')+'">'+I.chevL+(label||'Назад')+'</button>'}
+
+/* ---- challenge strip ---- */
+function tallyHtml(light){var h='<div class="beads'+(light?' lt':'')+'" role="img" aria-label="61 день челленджа">';
+for(var n=1;n<=DAYS;n++){var s=dateOf(n),st=light?'fut':(s==TODAY?'now':dayState(s)),cp=R.some(function(r){return r.d==n})||n==DAYS;
+h+='<i class="bd '+st+(cp?' cp':'')+'"></i>'}
+return h+'</div>'}
+function statsHtml(tot,bal){return '<div class="duo"><button class="tile2" data-view="stars"><span>Баллы</span><b>'+tot+'</b>'+I.chevR+'</button><button class="tile2" data-view="money"><span>Остаток</span><b>'+money(bal)+'</b>'+I.chevR+'</button></div>'}
+
+function rewardHtml(tot,bal,tn){var nx=-1,i,h='';for(i=0;i<4;i++)if(!S.bought[i]){nx=i;break}
+if(nx<0)return '<div class="rw"><div class="emo">🏆</div><div class="rwm"><b>Все награды получены</b><span>Ты забрал все четыре</span></div></div>';
+var r=R[nx],pp=Math.min(100,tot/r.at*100),mp=Math.min(100,Math.max(0,bal)/r.c*100),ok=tot>=r.at&&bal>=r.c&&tn>=r.d;
+h+='<div class="rw'+(ok?' av':'')+'"><div class="rwt"><div class="emo">'+r.e+'</div><div class="rwm"><b>'+r.n+'</b><span>'+(ok?'Можно забирать':'Чекпоинт '+dstr(dateOf(r.d)))+'</span></div></div>';
+h+='<div class="rwr"><span>Баллы</span><span>'+tot+' / '+r.at+'</span></div>'+bar(pp);
+h+='<div class="rwr"><span>Деньги</span><span>'+money(Math.max(0,bal))+' / '+money(r.c)+'</span></div>'+bar(mp,'var(--ink)');
+if(ok)h+='<button class="btn ink" data-buy="'+nx+'">Купить и списать '+money(r.c)+'</button>';
+h+='</div>';
+var got=R.filter(function(x,j){return S.bought[j]});
+if(got.length)h+='<div class="got">'+got.map(function(x){return '<span class="pill">'+x.e+' '+x.n+'</span>'}).join('')+'</div>';
+return h}
+
+function moverHtml(){return '<div class="mvbox"><div class="mvh"><span>Перенести на день</span><button class="ib" data-mv="" aria-label="Закрыть">'+I.close+'</button></div>'+monthsList().map(function(m){return '<div class="mname">'+MNN[m[1]]+'</div>'+gridHtml(m[0],m[1],function(s2,k2,dn2){var ok2=dn2>=1&&dn2<=DAYS&&s2!=SEL;return '<div class="c'+(ok2?'':' out')+'"'+(ok2?' data-mvto="'+s2+'"':'')+'><span class="d'+(s2==SEL?' sl':'')+'">'+k2+'</span></div>'})}).join('')+'</div>'}
+
+/* ---- rows ---- */
+function stRow(x){return '<div class="row'+(x.d?' on':'')+'">'+cbx('data-td="'+x.id+'"',x.d,false,x.t)+'<span class="rt">'+esc(x.t)+'</span><button class="ib sm" data-tdel="'+x.id+'" aria-label="Удалить">'+I.close+'</button></div>'}
+function addForm(k){return '<form class="add" data-tadd="'+k+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ti-'+String(k).replace(/[^\w]/g,'_')+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(k=='_'?'Новая задача':'Подзадача')+'" aria-label="Новая задача"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form>'}
+function nodeStRow(o){var p=o.p,x=o.x,ok=canToggle(p,o.i);return '<div class="row'+(x.d?' on':'')+'">'+cbx('data-nd="'+p.id+':'+x.id+'"',x.d,!ok,x.t)+'<span class="rt">'+esc(x.t)+'<small>'+esc(p.n)+(ok||x.d?'':', ещё закрыто')+'</small></span></div>'}
 function todosHtml(){var l=tdl(SEL).filter(function(x){return x.p===null||x.p===undefined}),dc=l.filter(function(x){return x.d}).length,ns=nodesOn(SEL),h='';
-if(ns.length)h+='<div class="gh"><b>Из проектов</b><span>'+ns.filter(function(o){return o.x.d}).length+' из '+ns.length+'</span></div><div class="card"><div class="sts own">'+ns.map(nodeStRow).join('')+'</div></div>';
-return h+'<div class="gh"><b>Мои задачи</b><span>'+(l.length?dc+' из '+l.length:'')+'</span></div><div class="card"><div class="sts own">'+l.map(stRow).join('')+addForm('_')+'</div></div><div class="hint">Эти задачи не дают баллов и не влияют на процент выполнения.</div>'}
+if(ns.length)h+=sh('Шаги проектов',ns.filter(function(o){return o.x.d}).length+' из '+ns.length)+'<div class="grp">'+ns.map(nodeStRow).join('')+'</div>';
+return h+sh('Мои задачи',l.length?dc+' из '+l.length:'')+'<div class="grp">'+l.map(stRow).join('')+addForm('_')+'</div><p class="hint">Без баллов. Просто чтобы ничего не забыть.</p>'}
 function tasksHtml(ed,n){var dn=S.done[SEL]||{},all=rows(SEL),act=all.filter(function(r){return !r.away}),away=all.filter(function(r){return r.away});
 var dc=act.filter(function(r){return dn[r.key]}).length;
-var h='<div class="gh"><b>Задания</b><span>'+dc+' из '+act.length+' · +'+pts(SEL)+' баллов</span></div><div class="card">';
-if(!ed)h+='<div class="note">'+(n<1?'Челлендж ещё не начался. Можно планировать и переносить.':'Будущий день. Отметить можно будет в этот день.')+'</div>';
+var h=sh('Задания','<b class="pts">+'+pts(SEL)+'</b> '+dc+' из '+act.length)+'<div class="grp">';
+if(!ed)h+='<p class="note">'+(n<1||SEL>TODAY&&dayNo(TODAY)<1?'Челлендж ещё не начался. Можно планировать и переносить.':'Этот день ещё впереди. Отметить можно будет в сам день.')+'</p>';
 act.concat(away).forEach(function(r){var id=r.id,k=r.key,t=T[id],on=!!dn[k];
-if(r.away){h+='<div class="t away"><span class="nm" style="flex:1"><span class="n">'+t.n+'</span><span class="tag">перенесено на '+dstr(r.away)+'</span></span><button class="btn sm out" data-undo="'+id+'">Вернуть</button></div>';return}
-var tag=r.from?'<span class="tag">перенесено с '+dstr(r.from)+'</span>':'';
-var ek=SEL+'|'+k,open=!!exp[ek],subs=subsOf(SEL,k),sd=subs.filter(function(x){return x.d}).length,stag=subs.length?'<span class="tag">Задачи: '+sd+' из '+subs.length+'</span>':'';
-h+='<div class="t'+(on?' on':'')+(open?' exp':'')+'"><label class="cb"><input type="checkbox" data-c="'+k+'"'+(on?' checked':'')+(ed?'':' disabled')+' aria-label="Отметить: '+t.n+'"><span class="bx">'+I.check+'</span></label><button class="nmb" data-tg="'+k+'" aria-expanded="'+open+'"><span class="nm"><span class="n">'+t.n+'</span>'+tag+stag+'</span>'+I.chevR.replace('<svg','<svg class="chev"')+'</button>';
+if(r.away){h+='<div class="row away"><span class="rt">'+t.n+'<small>перенесено на '+dstr(r.away)+'</small></span><button class="chip" data-undo="'+id+'">Вернуть</button></div>';return}
+var ek=SEL+'|'+k,open=!!exp[ek],subs=subsOf(SEL,k),sd=subs.filter(function(x){return x.d}).length;
+var meta=[];if(r.from)meta.push('перенесено с '+dstr(r.from));if(subs.length)meta.push('подзадачи '+sd+' из '+subs.length);
+h+='<div class="row task'+(on?' on':'')+(open?' exp':'')+'">'+cbx('data-c="'+k+'"',on,!ed,t.n)+'<button class="rtb" data-tg="'+k+'" aria-expanded="'+open+'"><span class="rt">'+t.n+(meta.length?'<small>'+meta.join(', ')+'</small>':'')+'</span>'+I.chevR.replace('<svg','<svg class="chev"')+'</button>';
 if(id=='work'){var w=hrs(SEL,k),o='';[2,4,6,8].forEach(function(x){o+='<option value="'+x+'"'+(w==x?' selected':'')+'>'+x+' ч</option>'});
 h+='<select class="sel" data-hrs="'+k+'" aria-label="Часы работы">'+o+'</select><span class="pt">+'+workPts(w)+'</span>'}
 else h+='<span class="pt">+'+t.p+'</span>';
-h+='<button class="ib" data-mv="'+k+'" aria-label="Перенести">'+I.arrow+'</button></div>';
+h+='<button class="ib sm" data-mv="'+k+'" aria-label="Перенести">'+I.arrow+'</button></div>';
 if(mvTask==k)h+=moverHtml();
-if(open)h+='<div class="sts">'+subs.map(stRow).join('')+addForm(k)+'</div>'});
+if(open)h+='<div class="subs">'+subs.map(stRow).join('')+addForm(k)+'</div>'});
 return h+'</div>'}
 
-function todayHtml(tot,bal){var n=dayNo(SEL),tn=dayNo(TODAY),inCh=n>=1&&n<=DAYS,ed=inCh&&SEL<=TODAY,started=tn>=1;
-var d=parse(SEL),title=inCh?(n==DAYS?'Итоги':'День '+n):(SEL==TODAY?'Сегодня':cap(WD[d.getDay()]));
-var sub=WD[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()];if(inCh)sub+=' · из 60';
-var back=SEL!=TODAY?' · <button class="lnk" data-go="today">к сегодня</button>':'';
-var h=(started?tallyHtml():'')+'<h1 class="ttl">'+title+'</h1><div class="sub">'+sub+back+'</div>';
-if(tn<1)h+='<div class="rc"><div class="rh"><div class="tile">🚀</div><div><div class="rt">Челлендж 60 дней</div><div class="rs">Старт '+dstr(dateOf(1))+' · через '+(1-tn)+' '+pl(1-tn,['день','дня','дней'])+'</div></div></div><div class="rs">Пока это просто трекер дел: баллы и деньги не считаются.</div></div>';
-else h+=statsHtml(tot,bal)+rewardHtml(tot,bal,tn);
+/* ---- today ---- */
+function todayHtml(tot,bal){var n=dayNo(SEL),tn=dayNo(TODAY),inCh=n>=1&&n<=DAYS,ed=inCh&&SEL<=TODAY;
+var d=parse(SEL),date=WD[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()];
+var back2=SEL!=TODAY?'<button class="chip" data-go="today">К сегодня</button>':'';
+var h='';
+if(tn<1){var left=1-tn;
+h+='<header class="top"><div><h1 class="ttl">'+(SEL==TODAY?'Сегодня':cap(WD[d.getDay()]))+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
+if(SEL==TODAY||!inCh)h+='<section class="launch"><div class="lnum">'+left+'</div><div class="ltx"><b>'+pl(left,['день','дня','дней'])+' до старта</b><span>Челлендж 60 дней начнётся '+dstr(dateOf(1))+'. Пока здесь просто список дел.</span></div>'+tallyHtml(true)+'</section>';
+}else{
+h+='<header class="top"><div><h1 class="ttl">'+(inCh?(n==DAYS?'Финал':'День '+n):(SEL==TODAY?'Сегодня':cap(WD[d.getDay()])))+(inCh?'<span class="of">/60</span>':'')+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
+h+=tallyHtml()+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)}
 if(inCh)h+=tasksHtml(ed,n);
 return h+todosHtml()}
 
-function calHtml(tot,bal){var tn=dayNo(TODAY),h='<h1 class="ttl">Календарь</h1><div class="sub">Нажми на день, чтобы открыть его задачи</div>'+(tn>=1?statsHtml(tot,bal):'')+'<div class="lgd"><span><i style="background:var(--st-full)"></i>Идеальный день</span><span><i style="background:var(--st-part)"></i>От 85%</span><span><b style="color:var(--gold)">15</b>Чекпоинт</span><span>🏆 Финал</span></div>';
-calMonths().forEach(function(m){h+='<div class="mcard"><div class="mname">'+MNN[m[1]]+' '+m[0]+'</div>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk='',hs=hasItems(s2)?' has':'';
-if(dn2<1||dn2>DAYS)return '<div class="c" data-day="'+s2+'"><span class="d'+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+hs+'">'+k+'</span></div>';
-R.forEach(function(r){if(r.d==dn2)mk=1});
-return '<div class="c" data-day="'+s2+'"><span class="d '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' gl':'')+hs+'">'+(dn2==DAYS?'🏆':k)+'</span></div>'})+'</div>'});
-var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' · '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Итоги челленджа',s:'Подводим результаты'}]);
+/* ---- calendar ---- */
+function calHtml(tot,bal){var tn=dayNo(TODAY),h='<header class="top"><div><h1 class="ttl">Календарь</h1><p class="dt">Нажми на день, чтобы открыть его дела</p></div></header>';
+h+='<div class="lgd"><span><i class="lg full"></i>Идеальный день</span><span><i class="lg part"></i>От 85%</span><span><i class="lg cp"></i>Чекпоинт</span><span><i class="lg has"></i>Есть дела</span></div>';
+calMonths().forEach(function(m){h+='<section class="month"><h3>'+MNN[m[1]]+' <span>'+m[0]+'</span></h3>'+gridHtml(m[0],m[1],function(s2,k,dn2){var mk=false,hs=hasItems(s2)?' has':'';
+if(dn2<1||dn2>DAYS)return '<div class="c" data-day="'+s2+'"><span class="d'+(s2<TODAY?' past':'')+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+hs+'">'+k+'</span></div>';
+R.forEach(function(r){if(r.d==dn2)mk=true});
+return '<div class="c" data-day="'+s2+'"><span class="d '+dayState(s2)+(s2==TODAY?' td':'')+(s2==SEL?' sl':'')+(mk?' gl':'')+hs+'">'+(dn2==DAYS?'🏆':k)+'</span></div>'})+'</section>'});
+var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' и '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Финал челленджа',s:'Подводим итоги'}]);
 ev.sort(function(a,b){return a.d-b.d});
-h+='<div class="gh"><b>Ключевые даты</b></div><div class="card">'+ev.map(function(x){return '<div class="kd"><div class="tile">'+x.e+'</div><div class="tx"><b>'+x.t+'</b><span class="rs">'+dstr(dateOf(x.d))+' · '+x.s+'</span></div>'+(x.b?'<span class="ok">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>';
+h+=sh('Чекпоинты')+'<div class="grp">'+ev.map(function(x){return '<div class="row kd"><span class="emo sm">'+x.e+'</span><span class="rt">'+x.t+'<small>'+dstr(dateOf(x.d))+', '+x.s+'</small></span>'+(x.b?'<span class="okd">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>';
 return h}
 
+/* ---- payments ---- */
 function payForm(p){var o='<option value="">Без сферы</option>'+S.sph.map(function(x){return '<option value="'+x.id+'"'+(p.sph==x.id?' selected':'')+'>'+esc(x.n)+'</option>'}).join('');
-return '<div class="pform"><div class="frow"><input class="inp" type="date" id="pdate" value="'+p.date+'" aria-label="Дата"><input class="inp" type="number" id="pamt" inputmode="numeric" placeholder="Сумма, ₸" value="'+(p.amt||'')+'" aria-label="Сумма"></div><div class="frow" style="margin-top:8px"><select class="inp" id="psph" aria-label="Сфера">'+o+'</select></div><div class="frow2"><button class="btn sm" data-psave="'+p.id+'">Сохранить</button>'+(p.id=='new'?'':(delP=='pay:'+p.id?'<button class="btn sm dn" data-pdel="'+p.id+'">Точно?</button>':'<button class="btn sm dn" data-pdelp2="'+p.id+'">Удалить</button>'))+'<button class="ib" data-pcancel="1" aria-label="Отмена">'+I.close+'</button></div></div>'}
+return '<div class="pform"><div class="frow"><input class="inp" type="number" id="pamt" inputmode="numeric" placeholder="Сумма, ₸" value="'+(p.amt||'')+'" aria-label="Сумма"><input class="inp" type="date" id="pdate" value="'+p.date+'" aria-label="Дата"></div><select class="inp" id="psph" aria-label="Сфера">'+o+'</select><div class="frow"><button class="btn" data-psave="'+p.id+'">Сохранить</button>'+(p.id=='new'?'':(delP=='pay:'+p.id?'<button class="btn dn" data-pdel="'+p.id+'">Точно удалить?</button>':'<button class="btn soft dn" data-pdelp2="'+p.id+'">Удалить</button>'))+'<button class="ib" data-pcancel="1" aria-label="Отмена">'+I.close+'</button></div></div>'}
 function payRows(list){var ps=list.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0}),h='';
-ps.forEach(function(p){if(editPay==p.id)h+=payForm(p);else h+='<div class="pr" data-pedit="'+p.id+'"><span class="pd">'+dstr(p.date)+sphTag(p)+'</span><span class="pa">'+money(p.amt)+'</span>'+I.chevR+'</div>'});return h}
+ps.forEach(function(p){var sp=p.sph&&sById(p.sph);if(editPay==p.id)h+=payForm(p);else h+='<div class="row pay" data-pedit="'+p.id+'"><span class="dot" style="background:'+(sp?scol(sp.id):'var(--faint)')+'"></span><span class="rt">'+money(p.amt)+'<small>'+dstr(p.date)+(sp?', '+esc(sp.n):'')+'</small></span>'+I.chevR.replace('<svg','<svg class="chev"')+'</div>'});return h}
 
-function viewHtml(tot,bal){var h='<button class="back" data-view="">'+I.chevL+'Назад</button>';
+function viewHtml(tot,bal){var h=back();
 if(view=='money'){
-h+='<h1 class="ttl" style="margin-top:6px">Доход</h1><div class="hero"><div class="lbl">Остаток</div><div class="big">'+money(bal)+'</div><div class="fg"><div><b>'+money(inc())+'</b><span>Заработано</span></div><div><b>'+money(spent())+'</b><span>Потрачено на награды</span></div></div></div>';
-if(editPay=='new')h+='<div class="card">'+payForm({id:'new',date:TODAY,amt:'',sph:''})+'</div>';else h+='<button class="btn" data-padd="1">'+I.plus+'Добавить платёж</button>';
-var ps=S.pay.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
-if(ps.length)h+='<div class="gh"><b>История платежей</b></div>';
-h+='<div class="card">';
-if(!ps.length)h+='<div class="empty">Платежей пока нет. Добавь первый, и он появится здесь.</div>';
-h+=payRows(ps);
-h+='</div>';if(ps.length)h+='<div class="hint">Нажми на платёж, чтобы изменить сумму или дату.</div>'}
+h+='<h1 class="ttl">Платежи</h1><section class="hero"><p class="lbl">Остаток на награды</p><div class="big">'+money(bal)+'</div><div class="split"><div><b>'+money(inc())+'</b><span>Заработано</span></div><div><b>'+money(spent())+'</b><span>Потрачено на награды</span></div></div></section>';
+if(editPay=='new')h+='<div class="grp pad">'+payForm({id:'new',date:TODAY,amt:'',sph:''})+'</div>';else h+='<button class="btn big" data-padd="1">'+I.plus+'Добавить платёж</button>';
+var ps=S.pay;
+h+=sh('История',ps.length||'')+'<div class="grp">'+(ps.length?payRows(ps):'<p class="empty">Платежей пока нет. Добавь первый, и он появится здесь.</p>')+'</div>';
+if(ps.length)h+='<p class="hint">Нажми на платёж, чтобы изменить сумму, дату или сферу.</p>'}
 else{var st=stats(),L=0,E=0;ORDER.forEach(function(i){if(st[i]){L+=st[i].lost;E+=st[i].earned}});
 var pc=E+L?Math.round(E/(E+L)*100):0;
-h+='<h1 class="ttl" style="margin-top:6px">Баллы</h1><div class="hero"><div class="lbl">Выполнение</div><div class="big">'+pc+'%</div><div class="fg"><div><b>'+tot+'</b><span>Заработано</span></div><div><b>−'+L+'</b><span>Упущено</span></div></div></div><div class="gh"><b>По разделам</b></div><div class="card">';
+h+='<h1 class="ttl">Баллы</h1><section class="hero"><p class="lbl">Выполнение</p><div class="big">'+pc+'%</div><div class="split"><div><b>'+tot+'</b><span>Заработано</span></div><div><b>−'+L+'</b><span>Упущено</span></div></div></section>'+sh('По заданиям')+'<div class="grp">';
 var any=false;
 ORDER.forEach(function(i){var o=st[i];if(!o||o.done+o.miss==0)return;any=true;var tt=o.done+o.miss,pp=Math.round(o.done/tt*100);
-h+='<div class="cat"><div class="tr"><b>'+T[i].n+'</b><span>'+o.done+' из '+tt+'</span></div><div class="track"><i style="width:'+pp+'%"></i></div><div class="mrow"><span>+'+o.earned+' заработано</span><span>−'+o.lost+' упущено</span></div>';
-if(i=='work'&&o.done)h+='<div class="mrow"><span>'+o.hours+' ч работы'+(o.bonus?' · бонус +'+o.bonus:'')+'</span><span></span></div>';
-h+='</div>'});
-if(!any)h+='<div class="empty">Пока нечего считать. Данные появятся после первого дня.</div>';
-h+='</div><div class="hint">Считаются прошедшие дни. Сегодняшний день учитывает только отмеченное.</div>'}
+h+='<div class="stat"><div class="str"><b>'+T[i].n+'</b><span>'+o.done+' из '+tt+'</span></div>'+bar(pp)+'<div class="str sm"><span>+'+o.earned+' заработано'+(i=='work'&&o.done?', '+o.hours+' ч'+(o.bonus?', бонус +'+o.bonus:''):'')+'</span><span>−'+o.lost+'</span></div></div>'});
+if(!any)h+='<p class="empty">Пока нечего считать. Данные появятся после первого дня челленджа.</p>';
+h+='</div><p class="hint">Считаются прошедшие дни. Сегодня учитывается только отмеченное.</p>'}
 return h}
 
-function projTab(){var h='<h1 class="ttl">Проекты</h1><div class="sub">Рабочие и творческие, только квест-линии</div>';
-h+='<form class="addf" data-newp="1" style="margin-top:16px" autocomplete="off"><input class="inp" id="np" type="text" enterkeyhint="done" maxlength="80" placeholder="Новый проект" aria-label="Название проекта"><select class="sel" aria-label="Тип"><option value="w">Работа</option><option value="c">Творчество</option></select><button class="addb" type="submit" aria-label="Добавить">'+I.plus+'</button></form>';
-[['w','Рабочие'],['c','Творческие']].forEach(function(g){var l=projs().filter(function(p){return p.k==g[0]});
-h+='<div class="gh"><b>'+g[1]+'</b><span>'+(l.length||'')+'</span></div><div class="card">';
-if(!l.length)h+='<div class="empty">Пока пусто</div>';
-l.forEach(function(p){var N=p.nodes.length,dn=pDone(p),pc=N?Math.round(dn/N*100):0,late=p.dl&&p.dl<TODAY&&(!N||dn<N);
-h+='<div class="pr" data-view="proj:'+p.id+'"><div class="spm"><div class="tr"><b>'+esc(p.n)+'</b><span>'+(N?dn+' из '+N:'нет узлов')+'</span></div><div class="track"><i style="width:'+pc+'%"></i></div>'+(p.dl?'<div class="tag'+(late?' dg':'')+'">до '+dstr(p.dl)+'</div>':'')+'</div>'+I.chevR+'</div>'});
-h+='</div>'});
+/* ---- projects ---- */
+function metro(p,cls){var N=p.nodes.length,cur=curNode(p);if(!N)return '<div class="metro empty"><i></i></div>';
+if(N>16)return bar(pDone(p)/N*100);
+return '<div class="metro '+(cls||'')+'">'+p.nodes.map(function(x,i){return '<i class="'+(x.d?'dn':i==cur?'cu':'lk')+'"></i>'}).join('')+'</div>'}
+function projCard(p){var N=p.nodes.length,dn=pDone(p),cur=curNode(p),late=p.dl&&p.dl<TODAY&&(!N||dn<N),fin=N&&dn==N;
+var next=fin?'Проект завершён':(cur>-1?'Дальше: '+esc(p.nodes[cur].t):'Добавь первый шаг');
+return '<button class="pcard" data-view="proj:'+p.id+'"><div class="pct"><b>'+esc(p.n)+'</b><span class="cnt">'+dn+'/'+N+'</span></div>'+metro(p)+'<div class="pcb"><span class="nx">'+next+'</span>'+(p.dl?'<span class="due'+(late?' late':'')+'">до '+dstr(p.dl)+'</span>':'')+'</div></button>'}
+function projTab(){var h='<header class="top"><div><h1 class="ttl">Проекты</h1><p class="dt">Чем ты сейчас занят и что дальше</p></div></header>';
+h+='<form class="add big" data-newp="1" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="np" type="text" enterkeyhint="done" maxlength="80" placeholder="Новый проект" aria-label="Название проекта"><select class="sel" aria-label="Тип"><option value="w">Работа</option><option value="c">Творчество</option></select><button class="go" type="submit" aria-label="Создать">'+I.check+'</button></form>';
+[['w','Работа'],['c','Творчество']].forEach(function(g){var l=projs().filter(function(p){return p.k==g[0]});
+h+=sh(g[1],l.length||'');
+if(!l.length)h+='<p class="empty card0">Здесь пока пусто. Впиши название сверху и выбери «'+g[1]+'».</p>';
+else h+='<div class="plist">'+l.map(projCard).join('')+'</div>'});
 return h}
 
 function projView(id){var p=pById(id);if(!p){view=null;return projTab()}
 var N=p.nodes.length,dn=pDone(p),pc=N?Math.round(dn/N*100):0,cur=curNode(p);
-var h='<button class="back" data-view="">'+I.chevL+'Назад</button>'+warnHtml();
-h+='<input class="inp ttlin" data-pn="1" type="text" maxlength="80" value="'+esc(p.n)+'" aria-label="Название проекта">';
-h+='<div class="hero"><div class="lbl">Прогресс</div><div class="big">'+dn+' из '+N+'</div><div class="track" style="margin-bottom:6px"><i style="width:'+pc+'%"></i></div><div class="mrow"><span>'+pc+'%</span><span>'+(p.dl?'дедлайн '+dstr(p.dl):'без дедлайна')+'</span></div></div>';
-h+='<div class="card" style="margin-top:12px"><div class="fr"><span>Тип</span><select class="sel" data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></div><div class="fr"><span>Дедлайн</span><input class="inp dt" type="date" data-pdl="1" value="'+(p.dl||'')+'" aria-label="Дедлайн"></div></div>';
-h+='<textarea class="ta" data-pdesc="1" placeholder="Описание и заметки" aria-label="Описание">'+esc(p.desc||'')+'</textarea>';
-h+='<div class="gh"><b>Квест-линия</b><span>'+(N?dn+' из '+N:'')+'</span></div><div class="card">';
-p.nodes.forEach(function(x,i){var ok=canToggle(p,i),st=x.d?'готово':(i==cur?'сейчас':'закрыто'),ref=p.id+':'+x.id;
-h+='<div class="nd'+(x.d?' on':'')+(!x.d&&i!=cur?' lk':'')+'"><div class="st"><label class="cb"><input type="checkbox" data-nd="'+ref+'"'+(x.d?' checked':'')+(ok?'':' disabled')+' aria-label="Отметить: '+esc(x.t)+'"><span class="bx">'+I.check+'</span></label><span class="tx">'+esc(x.t)+'<span class="tag" style="display:block">'+(i+1)+' · '+st+(x.date?' · '+dstr(x.date):'')+'</span></span><button class="ib" data-ndel="'+ref+'" aria-label="Удалить узел">'+I.close+'</button></div>';
-h+='<div class="ndr"><input class="inp dt" type="date" data-ndate="'+ref+'" value="'+(x.date||'')+'"'+(p.dl?' max="'+p.dl+'"':'')+' aria-label="Дата узла"><button class="ib" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button></div></div>'});
-h+='<div class="sts own"><form class="addf" data-nadd="'+p.id+'" autocomplete="off"><input class="inp" id="ni" type="text" enterkeyhint="done" maxlength="120" placeholder="Новый узел" aria-label="Новый узел"><button class="addb" type="submit" aria-label="Добавить">'+I.plus+'</button></form></div></div>';
-h+='<div class="hint">Узлы открываются по порядку. Узел с датой появится в списке дел этого дня.</div>';
-if(delP==p.id)h+='<button class="btn dn" data-pdelc="'+p.id+'">Точно удалить проект?</button><button class="btn out" data-pdelx="1">Отмена</button>';
-else h+='<button class="btn dn" data-pdelp="'+p.id+'">Удалить проект</button>';
+var h=back('','Проекты')+warnHtml();
+h+='<input class="tin" data-pn="1" type="text" maxlength="80" value="'+esc(p.n)+'" aria-label="Название проекта">';
+h+='<div class="chips"><label class="pchip"><span>Тип</span><select data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></label><label class="pchip"><span>Дедлайн</span><input type="date" data-pdl="1" value="'+(p.dl||'')+'" aria-label="Дедлайн"></label></div>';
+h+='<section class="hero"><div class="hrow"><div class="big">'+dn+'<span class="of"> из '+N+'</span></div><span class="pc">'+pc+'%</span></div>'+metro(p,'xl')+'</section>';
+h+=sh('Квест-линия',N?'шаг '+Math.min(N,(cur<0?N:cur+1))+' из '+N:'')+'<div class="quest">';
+p.nodes.forEach(function(x,i){var ok=canToggle(p,i),st=x.d?'dn':(i==cur?'cu':'lk'),ref=p.id+':'+x.id;
+h+='<div class="qn '+st+(openNode==x.id?' op':'')+'"><div class="qrail">'+cbx('data-nd="'+ref+'"',x.d,!ok,x.t)+'</div><div class="qbody"><button class="qtb" data-qo="'+x.id+'" aria-expanded="'+(openNode==x.id)+'"><div class="qt">'+esc(x.t)+'</div></button><div class="qm">'+(x.d?'Готово':i==cur?'Сейчас':'Откроется после шага '+(i))+(x.date?'<span class="due'+(x.date<TODAY&&!x.d?' late':'')+'">'+dstr(x.date)+'</span>':'')+'</div>';
+h+='<div class="qa"><label class="mini">'+ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')+'<input type="date" data-ndate="'+ref+'" value="'+(x.date||'')+'"'+(p.dl?' max="'+p.dl+'"':'')+' aria-label="Дата шага"><span>'+(x.date?'Дата':'Поставить дату')+'</span></label><button class="ib sm" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib sm" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button><button class="ib sm" data-ndel="'+ref+'" aria-label="Удалить шаг">'+I.close+'</button></div></div></div>'});
+h+='<form class="add qadd" data-nadd="'+p.id+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ni" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(N?'Следующий шаг':'Первый шаг')+'" aria-label="Новый шаг"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div>';
+h+='<p class="hint">Шаги открываются по порядку. Шаг с датой появится в делах этого дня.</p>';
+h+=sh('Заметки')+'<textarea class="ta" data-pdesc="1" placeholder="Описание, ссылки, мысли" aria-label="Заметки">'+esc(p.desc||'')+'</textarea>';
+if(delP==p.id)h+='<div class="frow end"><button class="btn dn" data-pdelc="'+p.id+'">Точно удалить проект?</button><button class="btn soft" data-pdelx="1">Отмена</button></div>';
+else h+='<button class="btn soft dn wide" data-pdelp="'+p.id+'">Удалить проект</button>';
 return h}
 
+/* ---- money ---- */
 function moneyTab(){var G=0;S.sph.forEach(function(x){G+=x.g});var E=inc(),pc=G?Math.min(100,Math.round(E/G*100)):0;
-var h='<h1 class="ttl">Деньги</h1><div class="sub">Заработок на творчестве</div>';
-h+='<div class="hero"><div class="lbl">Цель на два месяца</div><div class="big">'+money(G)+'</div><div class="track m" style="margin-bottom:0"><i style="width:'+pc+'%"></i></div><div class="fg"><div><b>'+money(E)+'</b><span>Заработано · '+pc+'%</span></div><div><b>'+money(Math.max(0,G-E))+'</b><span>Осталось</span></div></div></div>';
-h+='<button class="btn" data-qpay="1">'+I.plus+'Добавить платёж</button>';
-h+='<div class="gh"><b>Сферы</b></div><div class="card">'+S.sph.map(function(x){var e=earnedOf(x.id),p2=x.g?Math.min(100,Math.round(e/x.g*100)):0;
-return '<div class="pr" data-view="sph:'+x.id+'"><div class="spm"><div class="tr"><b>'+esc(x.n)+'</b><span>'+money(e)+' из '+money(x.g)+'</span></div><div class="track"><i style="width:'+p2+'%"></i></div></div>'+I.chevR+'</div>'}).join('')+'</div>';
-h+='<div class="card" style="margin-top:12px"><div class="pr" data-view="money"><span class="pd">История платежей</span>'+I.chevR+'</div></div>';
+var h='<header class="top"><div><h1 class="ttl">Деньги</h1><p class="dt">Заработок на творчестве за 60 дней</p></div></header>';
+var seg=S.sph.map(function(x){var e=earnedOf(x.id);return e>0&&G?'<i style="width:'+Math.min(100,e/G*100)+'%;background:'+scol(x.id)+'"></i>':''}).join('');
+h+='<section class="hero mhero"><p class="lbl">Заработано</p><div class="big">'+money(E)+'</div><p class="goal">из '+money(G)+', это '+pc+'%</p><div class="stack">'+seg+'</div><div class="leg">'+S.sph.map(function(x){return '<span><i style="background:'+scol(x.id)+'"></i>'+esc(x.n)+'</span>'}).join('')+'</div></section>';
+h+='<button class="btn big" data-qpay="1">'+I.plus+'Добавить платёж</button>';
+h+=sh('Сферы')+'<div class="sgrid">'+S.sph.map(function(x){var e=earnedOf(x.id),p2=x.g?Math.min(100,Math.round(e/x.g*100)):0;
+return '<button class="stile" data-view="sph:'+x.id+'" style="--c:'+scol(x.id)+'"><span class="blob"></span><span class="sr">'+ring(p2,scol(x.id))+'<em>'+p2+'%</em></span><b>'+esc(x.n)+'</b><span class="sm">'+money(e)+'<br>из '+money(x.g)+'</span><span class="ic">'+x.ideas.length+' '+pl(x.ideas.length,['идея','идеи','идей'])+'</span></button>'}).join('')+'</div>';
+h+='<div class="grp" style="margin-top:12px"><button class="row link" data-view="money"><span class="rt">История платежей<small>'+S.pay.length+' '+pl(S.pay.length,['запись','записи','записей'])+'</small></span>'+I.chevR.replace('<svg','<svg class="chev"')+'</button></div>';
 return h}
 
 function sphView(id){var x=sById(id);if(!x){view=null;return moneyTab()}
-var e=earnedOf(id),pc=x.g?Math.min(100,Math.round(e/x.g*100)):0;
-var h='<button class="back" data-view="">'+I.chevL+'Назад</button><h1 class="ttl" style="margin-top:6px">'+esc(x.n)+'</h1>';
-h+='<div class="hero"><div class="lbl">Заработано</div><div class="big">'+money(e)+'</div><div class="track m" style="margin-bottom:6px"><i style="width:'+pc+'%"></i></div><div class="mrow"><span>'+pc+'%</span><span>цель '+money(x.g)+'</span></div></div>';
-h+='<div class="card" style="margin-top:12px"><div class="fr"><span>Цель, ₸</span><input class="inp dt" type="number" inputmode="numeric" data-sgoal="1" value="'+x.g+'" style="width:140px;text-align:right" aria-label="Цель"></div></div>';
-h+='<div class="gh"><b>Идеи</b><span>'+(x.ideas.length||'')+'</span></div><div class="card">';
-x.ideas.forEach(function(i){h+='<div class="pr" data-view="idea:'+id+':'+i.id+'"><span class="pd">'+esc(i.t||'Без названия')+'</span>'+I.chevR+'</div>'});
-h+='<div class="sts own"><form class="addf" data-iadd="'+id+'" autocomplete="off"><input class="inp" id="ii" type="text" enterkeyhint="done" maxlength="80" placeholder="Новая идея" aria-label="Новая идея"><button class="addb" type="submit" aria-label="Добавить">'+I.plus+'</button></form></div></div>';
+var e=earnedOf(id),pc=x.g?Math.min(100,Math.round(e/x.g*100)):0,c=scol(id);
+var h='<div class="sphhead" style="--c:'+c+'"><span class="blob b1"></span>'+back('','Деньги')+'<h1 class="ttl">'+esc(x.n)+'</h1><div class="big">'+money(e)+'</div><p class="goal">из '+money(x.g)+', это '+pc+'%</p>'+bar(pc,c)+'</div>';
+h+=sh('Идеи',x.ideas.length||'')+'<div class="grp">';
+x.ideas.forEach(function(i){var first=(i.body||'').split('\n')[0];h+='<button class="row idea" data-view="idea:'+id+':'+i.id+'">'+(i.imgs&&i.imgs.length?'<img class="th" src="'+i.imgs[0]+'" alt="">':'<span class="th" style="background:'+c+'"></span>')+'<span class="rt">'+esc(i.t||'Без названия')+(first?'<small>'+esc(first)+'</small>':'')+'</span>'+I.chevR.replace('<svg','<svg class="chev"')+'</button>'});
+h+='<form class="add" data-iadd="'+id+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ii" type="text" enterkeyhint="done" maxlength="80" placeholder="Новая идея" aria-label="Новая идея"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div>';
 var pl2=S.pay.filter(function(p){return p.sph==id});
-h+='<div class="gh"><b>Платежи</b></div>';
-if(editPay=='new')h+='<div class="card">'+payForm({id:'new',date:TODAY,amt:'',sph:id})+'</div>';else h+='<button class="btn" style="margin-top:0" data-padd="1">'+I.plus+'Добавить платёж</button>';
-if(pl2.length)h+='<div class="card" style="margin-top:12px">'+payRows(pl2)+'</div>';
+h+=sh('Платежи',pl2.length||'');
+if(editPay=='new')h+='<div class="grp pad">'+payForm({id:'new',date:TODAY,amt:'',sph:id})+'</div>';
+else h+='<button class="btn big soft" data-padd="1">'+I.plus+'Добавить платёж</button>';
+if(pl2.length)h+='<div class="grp" style="margin-top:10px">'+payRows(pl2)+'</div>';
+h+='<div class="grp" style="margin-top:22px"><div class="row"><span class="rt">Цель на 60 дней</span><input class="inp num" type="number" inputmode="numeric" data-sgoal="1" value="'+x.g+'" aria-label="Цель, ₸"><span class="cur">₸</span></div></div>';
 return h}
 
 function ideaView(sid,iid){var x=ideaBy(sid,iid);if(!x){view=sid&&sById(sid)?'sph:'+sid:null;return view?sphView(sid):moneyTab()}
-var h='<button class="back" data-view="sph:'+sid+'">'+I.chevL+esc(sById(sid).n)+'</button>'+warnHtml();
-h+='<input class="inp ttlin" data-it="1" type="text" maxlength="80" value="'+esc(x.t)+'" placeholder="Название идеи" aria-label="Название идеи">';
-h+='<textarea class="ta" data-ib="1" placeholder="Описание, заметки, ссылки" aria-label="Заметка">'+esc(x.body||'')+'</textarea>';
+var sp=sById(sid);
+var h=back('sph:'+sid,esc(sp.n))+warnHtml();
+h+='<span class="tagc" style="--c:'+scol(sid)+'"><i></i>'+esc(sp.n)+'</span>';
+h+='<input class="tin" data-it="1" type="text" maxlength="80" value="'+esc(x.t)+'" placeholder="Название идеи" aria-label="Название идеи">';
+h+='<textarea class="ta note" data-ib="1" placeholder="Опиши идею: материалы, референсы, сколько стоит, кому продать" aria-label="Заметка">'+esc(x.body||'')+'</textarea>';
 if(x.imgs.length)h+='<div class="imgs">'+x.imgs.map(function(u,k){return '<div class="im"><img src="'+u+'" alt=""><button class="ib" data-imgdel="'+k+'" aria-label="Удалить фото">'+I.close+'</button></div>'}).join('')+'</div>';
-h+='<label class="btn out" style="cursor:pointer">'+I.plus+'Добавить фото<input type="file" accept="image/*" data-img="1"></label>';
-if(delP=='idea')h+='<button class="btn dn" data-idel="1">Точно удалить идею?</button><button class="btn out" data-pdelx="1">Отмена</button>';else h+='<button class="btn dn" data-idelp="1">Удалить идею</button>';
+h+='<label class="btn big soft">'+ic('<rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-9 8"/>')+'Добавить фото<input type="file" accept="image/*" data-img="1"></label>';
+if(delP=='idea')h+='<div class="frow end"><button class="btn dn" data-idel="1">Точно удалить идею?</button><button class="btn soft" data-pdelx="1">Отмена</button></div>';
+else h+='<button class="btn soft dn wide" data-idelp="1">Удалить идею</button>';
 return h}
 
 function addImg(file,sid,iid){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var m=900,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);
 var u=c.toDataURL('image/jpeg',.72),x=ideaBy(sid,iid);if(!x)return;x.imgs.push(u);if(!save()){x.imgs.pop();warn='Не хватило памяти телефона для этого фото'}render()};im.src=fr.result};fr.readAsDataURL(file)}
 
-function autoTa(){document.querySelectorAll('textarea.ta').forEach(function(t){t.style.height='auto';t.style.height=Math.max(140,t.scrollHeight)+'px'})}
+function autoTa(){document.querySelectorAll('textarea.ta').forEach(function(t){t.style.height='auto';t.style.height=Math.max(120,t.scrollHeight)+'px'})}
 
 function render(){var tot=total(),bal=inc()-spent(),h;
 if(view){var v=String(view).split(':');
@@ -518,7 +632,7 @@ if(refocus){var fe=document.getElementById(refocus);refocus=null;if(fe)fe.focus(
 function toTop(){try{window.scrollTo(0,0)}catch(e){}}
 
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay]');if(!t||t.disabled)return;var D=t.dataset;
+app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo]');if(!t||t.disabled)return;var D=t.dataset;
 if(D.tg){var ek2=SEL+'|'+D.tg;exp[ek2]=!exp[ek2]}
 else if(D.tdel){S.todos[SEL]=tdl(SEL).filter(function(x){return x.id!=D.tdel});save()}
 else if('view' in D){view=D.view||null;editPay=null;delP=null;toTop()}
@@ -538,6 +652,7 @@ else if('mv' in D){mvTask=D.mv||null}
 else if(D.day){SEL=D.day;tab='today';view=null;mvTask=null;toTop()}
 else if(D.nup||D.ndn){var a=(D.nup||D.ndn).split(':'),p=pById(a[0]);if(p){var i=p.nodes.map(function(x){return x.id}).indexOf(a[1]),j=D.nup?i-1:i+1;if(i>-1&&j>=0&&j<p.nodes.length){var tmp=p.nodes[i];p.nodes[i]=p.nodes[j];p.nodes[j]=tmp;save()}}}
 else if(D.ndel){var b=D.ndel.split(':'),p2=pById(b[0]);if(p2){p2.nodes=p2.nodes.filter(function(x){return x.id!=b[1]});save()}}
+else if(D.qo){openNode=openNode==D.qo?null:D.qo}
 else if(D.pdelp){delP=D.pdelp}
 else if(D.pdelx){delP=null}
 else if(D.idelp){delP='idea'}
@@ -572,7 +687,7 @@ if(f.dataset.tadd!==undefined){var k=f.dataset.tadd;if(!S.todos)S.todos={};(S.to
 else if(f.dataset.newp!==undefined){var np={id:uid(),n:v,k:f.querySelector('select').value,dl:'',desc:'',nodes:[]};S.proj.push(np);save();view='proj:'+np.id;toTop();render()}
 else if(f.dataset.nadd!==undefined){var p=pById(f.dataset.nadd);if(p){p.nodes.push({id:tdUid(),t:v,date:'',d:false});save();refocus='ni';render()}}
 else if(f.dataset.iadd!==undefined){var sp=sById(f.dataset.iadd);if(sp){var ni={id:tdUid(),t:v,body:'',imgs:[]};sp.ideas.push(ni);save();view='idea:'+sp.id+':'+ni.id;toTop();render()}}});
-document.querySelector('.nav').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;view=null;editPay=null;mvTask=null;delP=null;render();toTop()}});
+document.querySelector('.nav').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;view=null;openNode=null;editPay=null;mvTask=null;delP=null;render();toTop()}});
 
 render();
 if(window.claude&&claude.use){(async function(){try{var u=await claude.use('user'),db=await claude.use('db');if(!u||!db)return;

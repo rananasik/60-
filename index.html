@@ -430,6 +430,28 @@ input[type=file]{display:none}
 .clr svg{width:11px;height:11px}
 .minw{display:inline-flex;align-items:center;gap:4px;margin-right:auto}
 .minw .mini{margin-right:0}
+/* date picker sheet */
+html.lock,html.lock body{overflow:hidden}
+.shd{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);animation:fdin .2s ease-out}
+.shp{position:fixed;z-index:41;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:var(--paper);border-radius:26px 26px 0 0;padding:14px 12px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:shup .26s cubic-bezier(.2,.9,.3,1)}
+@keyframes shup{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fdin{from{opacity:0}to{opacity:1}}
+.shh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:2px 6px 10px}
+.shh b{display:block;font:600 18px/1.2 var(--f-d)}
+.shh span{display:block;font-size:14px;color:var(--mute);margin-top:4px}
+.shb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:20px}
+.shb .month{margin-top:0}
+.shb .month+.month{margin-top:10px}
+.d.psel{background:var(--blue)!important;color:#fff!important}
+.d.psel::before{display:none}
+.shf{display:flex;gap:8px;padding-top:10px}
+.shf .btn{flex:1;height:52px}
+.btn:disabled{opacity:.4}
+button.pcl{border:0;background:transparent;padding:0;font-size:14px}
+button.pcl b{font-weight:600}
+button.pchip{border:0;font-size:14px}
+button.pchip b{font-weight:600}
+button.mini{border:0}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -647,12 +669,12 @@ function projView(id){var p=pById(id);if(!p){view=null;return projTab()}
 var N=p.nodes.length,dn=pDone(p),pc=N?Math.round(dn/N*100):0,cur=curNode(p);
 var h=back('','Проекты')+warnHtml();
 h+='<input class="tin" data-pn="1" type="text" maxlength="80" value="'+esc(p.n)+'" aria-label="Название проекта">';
-h+='<div class="chips"><label class="pchip"><span>Тип</span><select data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></label><span class="pchip"><label class="pcl"><span>Дедлайн</span><input type="date" data-pdl="1" value="'+(p.dl||'')+'" aria-label="Дедлайн"></label>'+(p.dl?'<button class="clr" data-pdlx="1" aria-label="Убрать дедлайн"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span></div>';
+h+='<div class="chips"><label class="pchip"><span>Тип</span><select data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></label><span class="pchip"><button type="button" class="pcl" data-pick="pdl|'+p.id+'"><span>Дедлайн</span><b>'+(p.dl?dstr(p.dl):'нет')+'</b></button>'+(p.dl?'<button class="clr" data-pdlx="1" aria-label="Убрать дедлайн"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span></div>';
 h+='<section class="hero"><div class="hrow"><div class="big">'+dn+'<span class="of"> из '+N+'</span></div><span class="pc">'+pc+'%</span></div>'+metro(p,'xl')+'</section>';
 h+=sh('Квест-линия',N?'шаг '+Math.min(N,(cur<0?N:cur+1))+' из '+N:'')+'<div class="quest">';
 p.nodes.forEach(function(x,i){var ok=canToggle(p,i),st=x.d?'dn':(i==cur?'cu':'lk'),ref=p.id+':'+x.id;
 h+='<div class="qn '+st+(openNode==x.id?' op':'')+'"><div class="qrail">'+cbx('data-nd="'+ref+'"',x.d,!ok,x.t)+'</div><div class="qbody"><button class="qtb" data-qo="'+x.id+'" aria-expanded="'+(openNode==x.id)+'"><div class="qt">'+esc(x.t)+'</div></button><div class="qm">'+(x.d?'Готово':i==cur?'Сейчас':'Откроется после шага '+(i))+(x.date?'<span class="due'+(x.date<TODAY&&!x.d?' late':'')+'">'+dstr(x.date)+'</span>':'')+'</div>';
-h+='<div class="qa"><span class="minw"><label class="mini">'+ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')+'<input type="date" data-ndate="'+ref+'" value="'+(x.date||'')+'"'+(p.dl?' max="'+p.dl+'"':'')+' aria-label="Дата шага"><span>'+(x.date?dstr(x.date):'Поставить дату')+'</span></label>'+(x.date?'<button class="clr" data-ndx="'+ref+'" aria-label="Убрать дату"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span><button class="ib sm" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib sm" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button><button class="ib sm" data-ndel="'+ref+'" aria-label="Удалить шаг">'+I.close+'</button></div></div></div>'});
+h+='<div class="qa"><span class="minw"><button type="button" class="mini" data-pick="ndate|'+ref+'">'+ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')+'<span>'+(x.date?dstr(x.date):'Поставить дату')+'</span></button>'+(x.date?'<button class="clr" data-ndx="'+ref+'" aria-label="Убрать дату"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span><button class="ib sm" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib sm" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button><button class="ib sm" data-ndel="'+ref+'" aria-label="Удалить шаг">'+I.close+'</button></div></div></div>'});
 h+='<form class="add qadd" data-nadd="'+p.id+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ni" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(N?'Следующий шаг':'Первый шаг')+'" aria-label="Новый шаг"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div>';
 h+='<p class="hint">Шаги открываются по порядку. Шаг с датой появится в делах этого дня.</p>';
 h+=sh('Заметки')+'<textarea class="ta" data-pdesc="1" placeholder="Описание, ссылки, мысли" aria-label="Заметки">'+esc(p.desc||'')+'</textarea>';
@@ -735,7 +757,7 @@ function stChip(x){return '<button class="stc '+(x.st||'idea')+'" data-cst="'+x.
 function itRow(x,dateBlock){var d=parse(x.date);
 return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'">'+(dateBlock?'<span class="dbk" style="--c:'+icol(x)+'"><b>'+d.getDate()+'</b><small>'+MS[d.getMonth()]+'</small></span>':'<span class="kdot" style="background:'+icol(x)+'"></span>')+'<span class="rt">'+esc(x.t)+'<small>'+(itMeta(x,false)||(x.k=='ev'?'Мероприятие':'Контент'))+'</small></span></button>'+(x.k=='ct'?stChip(x):'')+'</div>'}
 function addEvForm(k,date){var ev=k=='ev';
-return '<form class="newp" data-eadd="'+k+'" autocomplete="off"><div class="add"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-'+k+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(ev?'Новое мероприятие':'Что снять или выложить')+'" aria-label="Название"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></div><div class="frow2"><label class="pchip"><span>Дата</span><input type="date" name="ed" value="'+(date||TODAY)+'"></label>'+(ev?'<label class="pchip"><span>Время</span><input type="time" name="et"></label>':'<label class="pchip"><span>Формат</span><select name="ef">'+CFMT.map(function(f){return '<option>'+f+'</option>'}).join('')+'</select></label>')+'</div></form>'}
+return '<form class="newp" data-eadd="'+k+'" autocomplete="off"><div class="add"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-'+k+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(ev?'Новое мероприятие':'Что снять или выложить')+'" aria-label="Название"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></div><div class="frow2"><button type="button" class="pchip" data-pick="form|ed-'+k+'"><span>Дата</span><b>'+dstr(date||TODAY)+'</b></button><input type="hidden" name="ed" id="ed-'+k+'" value="'+(date||TODAY)+'">'+(ev?'<label class="pchip"><span>Время</span><input type="time" name="et"></label>':'<label class="pchip"><span>Формат</span><select name="ef">'+CFMT.map(function(f){return '<option>'+f+'</option>'}).join('')+'</select></label>')+'</div></form>'}
 
 function calHtml(tot,bal){var h='<header class="top"><div><h1 class="ttl">Календарь</h1><p class="dt">'+({all:'Нажми на день, чтобы открыть его',ch:'Дни челленджа и чекпоинты',ev:'Когда ты занят',ct:'Что и когда выходит'})[calF]+'</p></div></header>';
 h+='<div class="cf" role="tablist" aria-label="Фильтр календаря">'+CF.map(function(f){return '<button class="cfb'+(calF==f[0]?' on':'')+'" role="tab" aria-selected="'+(calF==f[0])+'" data-cf="'+f[0]+'" style="--c:'+f[2]+'"><i></i>'+f[1]+'</button>'}).join('')+'</div>';
@@ -776,7 +798,7 @@ var bk=itBack||'',ev=x.k=='ev';
 var h=back(bk,bk.indexOf('day:')==0?'День':bk.indexOf('proj:')==0?'Проект':'Календарь')+warnHtml();
 h+='<span class="tagc" style="--c:'+icol(x)+'"><i></i>'+(ev?'Мероприятие':'Контент')+'</span>';
 h+='<input class="tin" data-itt="1" type="text" maxlength="120" value="'+esc(x.t)+'" placeholder="Название" aria-label="Название">';
-h+='<div class="chips"><label class="pchip"><span>Дата</span><input type="date" data-idate="1" value="'+x.date+'" aria-label="Дата"></label>';
+h+='<div class="chips"><button type="button" class="pchip" data-pick="idate|'+x.id+'"><span>Дата</span><b>'+(x.date?dstr(x.date):'нет')+'</b></button>';
 if(ev)h+='<label class="pchip"><span>Время</span><input type="time" data-itime="1" value="'+(x.time||'')+'" aria-label="Время"></label>';
 else h+='<label class="pchip"><span>Формат</span><select data-ik="1">'+CFMT.map(function(f){return '<option'+(x.f==f?' selected':'')+'>'+f+'</option>'}).join('')+'</select></label><label class="pchip"><span>Статус</span><select data-is="1">'+CST.map(function(s){return '<option value="'+s[0]+'"'+(x.st==s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>';
 h+='<label class="pchip"><span>Проект</span><select data-ip="1"><option value="">нет</option>'+projs().map(function(p){return '<option value="'+p.id+'"'+(x.p==p.id?' selected':'')+'>'+esc(p.n)+'</option>'}).join('')+'</select></label></div>';
@@ -801,7 +823,41 @@ var sub=n==DAYS?'Последний день. Подводим итоги.':'О�
 return '<section class="launch"><div class="lnum">'+n+'</div><div class="ltx"><b>'+(n==DAYS?'финал челленджа':'день из 60')+'</b><span>'+sub+'</span></div>'+tallyHtml(true,SEL)+'</section>'}
 
 function ideasCt(){var ids=evs().filter(function(x){return x.k=='ct'&&!x.date});
-return sh('Банк идей',ids.length||'')+'<div class="grp">'+ids.map(function(x){var first=(x.note||'').split('\n')[0];return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'"><span class="kdot" style="background:'+icol(x)+'"></span><span class="rt">'+esc(x.t)+'<small>'+esc(first||x.f||'Идея')+'</small></span></button><label class="chip plan">В план<input type="date" data-iplan="'+x.id+'" aria-label="Дата публикации"></label></div>'}).join('')+'<form class="add" data-eadd="idea" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-idea" type="text" enterkeyhint="done" maxlength="120" placeholder="Новая идея для контента" aria-label="Новая идея"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div><p class="hint">Закидывай идеи сюда. Когда готова, нажми «В план» и выбери дату.</p>'}
+return sh('Банк идей',ids.length||'')+'<div class="grp">'+ids.map(function(x){var first=(x.note||'').split('\n')[0];return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'"><span class="kdot" style="background:'+icol(x)+'"></span><span class="rt">'+esc(x.t)+'<small>'+esc(first||x.f||'Идея')+'</small></span></button><button type="button" class="chip" data-pick="iplan|'+x.id+'">В план</button></div>'}).join('')+'<form class="add" data-eadd="idea" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-idea" type="text" enterkeyhint="done" maxlength="120" placeholder="Новая идея для контента" aria-label="Новая идея"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div><p class="hint">Закидывай идеи сюда. Когда готова, нажми «В план» и выбери дату.</p>'}
+
+/* ---- date picker sheet ---- */
+var pk=null;
+function pkMonths(){var a=parse(TODAY);if(pk.val&&parse(pk.val)<a)a=parse(pk.val);if(START<a&&parse(TODAY)>=START)a=a;var f=new Date(a.getFullYear(),a.getMonth(),1);
+var e=parse(dateOf(DAYS)),t4=parse(TODAY);t4.setMonth(t4.getMonth()+4);if(t4>e)e=t4;if(pk.val&&parse(pk.val)>e)e=parse(pk.val);var out=[];while(f<=e){out.push([f.getFullYear(),f.getMonth()]);f=new Date(f.getFullYear(),f.getMonth()+1,1)}return out}
+function openPick(spec){var i=spec.indexOf('|'),kind=spec.slice(0,i),ref=spec.slice(i+1),o={kind:kind,ref:ref,val:'',min:'',max:'',clr:false,title:'Дата'};
+if(kind=='pdl'){var p=pById(ref);if(!p)return;o.val=p.dl||'';o.clr=true;o.title='Дедлайн проекта';p.nodes.forEach(function(x){if(x.date&&x.date>o.min)o.min=x.date})}
+else if(kind=='ndate'){var a=ref.split(':'),p2=pById(a[0]);if(!p2)return;var x=p2.nodes.filter(function(n){return n.id==a[1]})[0];if(!x)return;o.val=x.date||'';o.max=p2.dl||'';o.clr=true;o.title=esc(x.t)}
+else if(kind=='idate'){var it=evById(ref);if(!it)return;o.val=it.date||'';o.clr=it.k=='ct';o.title=esc(it.t)}
+else if(kind=='iplan'){var it2=evById(ref);if(!it2)return;o.title='Когда выложить: '+esc(it2.t)}
+else if(kind=='form'){var inp=document.getElementById(ref);if(!inp)return;o.val=inp.value||''}
+pk=o;renderSheet(true)}
+function pickCell(s2,k,dn2){var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d',its=evOn(s2).slice(0,3),dis=(pk.min&&s2<pk.min)||(pk.max&&s2>pk.max);
+if(s2<TODAY)cls+=' past';if(mk)cls+=' gl';if(s2==TODAY)cls+=' td';if(s2==pk.val)cls+=' psel';
+var inner='<b class="n">'+(isCh&&dn2==DAYS?'🏆':k)+'</b>',mkh=its.length?'<span class="mk">'+its.map(function(x){return '<i style="background:'+icol(x)+'"></i>'}).join('')+'</span>':'';
+return '<div class="c'+(dis?' out':'')+'"'+(dis?'':' data-pd="'+s2+'"')+'><span class="'+cls+'">'+inner+'</span>'+mkh+'</div>'}
+function sheetHtml(){if(!pk)return '';
+var h='<div class="shd" data-pkx="1"></div><div class="shp" role="dialog" aria-modal="true" aria-label="Выбор даты"><div class="shh"><div><b>'+pk.title+'</b><span>'+(pk.val?cap(WD[parse(pk.val).getDay()])+', '+dstr(pk.val):'Дата не выбрана')+'</span></div><button class="ib" data-pkx="1" aria-label="Закрыть">'+I.close+'</button></div>';
+h+='<div class="shb" id="shb">'+pkMonths().map(function(m){return '<section class="month pm" data-ym="'+m[0]+'-'+m[1]+'"><h3>'+MNN[m[1]]+' <span>'+m[0]+'</span></h3>'+gridHtml(m[0],m[1],pickCell)+'</section>'}).join('')+'</div>';
+h+='<div class="shf">'+(pk.clr?'<button class="btn soft" data-pkclr="1">Без даты</button>':'')+'<button class="btn" data-pkok="1"'+(pk.val?'':' disabled')+'>Готово</button></div></div>';
+return h}
+function renderSheet(first){var el=document.getElementById('sheet');if(!el){el=document.createElement('div');el.id='sheet';document.body.appendChild(el)}
+var sc=document.getElementById('shb'),top=sc?sc.scrollTop:0;el.innerHTML=sheetHtml();document.documentElement.classList.toggle('lock',!!pk);
+var nb=document.getElementById('shb');if(!nb)return;if(!first){nb.scrollTop=top;return}
+var d=parse(pk.val||TODAY),t=nb.querySelector('[data-ym="'+d.getFullYear()+'-'+d.getMonth()+'"]');if(t)nb.scrollTop=t.offsetTop-nb.offsetTop-6}
+function applyPick(v){var o=pk;pk=null;
+if(o.kind=='pdl'){var p=pById(o.ref);if(p){p.dl=v;save()}render()}
+else if(o.kind=='ndate'){var a=o.ref.split(':'),p2=pById(a[0]);if(p2)p2.nodes.forEach(function(x){if(x.id==a[1])x.date=v});save();render()}
+else if(o.kind=='idate'||o.kind=='iplan'){var it=evById(o.ref);if(it&&(v||it.k=='ct')){it.date=v;save()}render()}
+else if(o.kind=='form'){var inp=document.getElementById(o.ref);if(inp&&v){inp.value=v;var b=document.querySelector('[data-pick="form|'+o.ref+'"] b');if(b)b.textContent=dstr(v)}}
+renderSheet()}
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-pick]');if(t){e.preventDefault();e.stopPropagation();openPick(t.dataset.pick);return}
+var s=e.target.closest&&e.target.closest('#sheet [data-pd],#sheet [data-pkx],#sheet [data-pkok],#sheet [data-pkclr]');if(!s)return;var D=s.dataset;
+if(D.pd){pk.val=D.pd;renderSheet()}else if(D.pkx){pk=null;renderSheet()}else if(D.pkok){if(pk.val)applyPick(pk.val)}else if(D.pkclr){applyPick('')}},true);
 
 var app=document.getElementById('app');
 app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-unplan],[data-pdlx],[data-ndx],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;

@@ -423,6 +423,8 @@ input[type=file]{display:none}
 .beads.lt .bd.cp.full{background:#fff}
 .beads.lt .bd.now{height:26px;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
 .lnum{min-width:1ch;text-align:center}
+.chip.plan{position:relative;display:inline-flex;align-items:center;overflow:hidden;cursor:pointer}
+.chip.plan input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;cursor:pointer}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -721,7 +723,7 @@ function evOn(d,k){return evs().filter(function(x){return x.date==d&&(!k||x.k==k
 function kc(k){return k=='ev'?'var(--ev)':'var(--ct)'}
 function icol(x){return x.c||kc(x.k)}
 function cstName(s){for(var i=0;i<CST.length;i++)if(CST[i][0]==s)return CST[i][1];return 'Идея'}
-function calMonths(){var f=parse(TODAY)<START?parse(TODAY):START,e=parse(dateOf(DAYS));evs().forEach(function(x){var d=parse(x.date);if(d>e)e=d});
+function calMonths(){var f=parse(TODAY)<START?parse(TODAY):START,e=parse(dateOf(DAYS));evs().forEach(function(x){if(!x.date)return;var d=parse(x.date);if(d>e)e=d});
 var out=[],a=new Date(f.getFullYear(),f.getMonth(),1);while(a<=e){out.push([a.getFullYear(),a.getMonth()]);a=new Date(a.getFullYear(),a.getMonth()+1,1)}return out}
 function itMeta(x,withDate){var m=[];if(withDate)m.push(dstr(x.date));if(x.k=='ev'&&x.time)m.push(x.time);if(x.k=='ct'&&x.f)m.push(x.f);var p=x.p&&pById(x.p);if(p)m.push(esc(p.n));return m.join(', ')}
 function stChip(x){return '<button class="stc '+(x.st||'idea')+'" data-cst="'+x.id+'" aria-label="Статус: '+cstName(x.st)+', нажми, чтобы сменить">'+cstName(x.st)+'</button>'}
@@ -747,11 +749,12 @@ return '<div class="c" data-day="'+s2+'"><span class="'+cls+'"'+sty+'>'+inner+'<
 if(calF=='ch'){var ev=R.map(function(r,i){return {d:r.d,e:r.e,t:r.n,s:r.at+' '+pl(r.at,['балл','балла','баллов'])+' и '+money(r.c),b:S.bought[i]}}).concat([{d:DAYS,e:'🏆',t:'Финал челленджа',s:'Подводим итоги'}]);
 ev.sort(function(a,b){return a.d-b.d});
 h+=sh('Чекпоинты')+'<div class="grp">'+ev.map(function(x){return '<div class="row kd"><span class="emo sm">'+x.e+'</span><span class="rt">'+x.t+'<small>'+dstr(dateOf(x.d))+', '+x.s+'</small></span>'+(x.b?'<span class="okd">'+I.check+'</span>':'')+'</div>'}).join('')+'</div>'}
-else{var up=evs().filter(function(x){return x.date>=TODAY&&(calF=='all'||x.k==calF)}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.time||'99')<(b.time||'99')?-1:1});
-var past=calF=='all'?[]:evs().filter(function(x){return x.date<TODAY&&x.k==calF}).sort(function(a,b){return a.date<b.date?1:-1});
+else{var up=evs().filter(function(x){return x.date&&x.date>=TODAY&&(calF=='all'||x.k==calF)}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.time||'99')<(b.time||'99')?-1:1});
+var past=calF=='all'?[]:evs().filter(function(x){return x.date&&x.date<TODAY&&x.k==calF}).sort(function(a,b){return a.date<b.date?1:-1});
 var ttl={all:'Ближайшее',ev:'Ближайшие мероприятия',ct:'Контент-план'}[calF];
 h+=sh(ttl,up.length||'')+'<div class="grp">'+(up.length?up.slice(0,calF=='all'?8:60).map(function(x){return itRow(x,true)}).join(''):'<p class="empty">'+({all:'Пока ничего не запланировано. Выбери «Мероприятия» или «Контент», чтобы добавить.',ev:'Мероприятий пока нет. Впиши первое в поле выше.',ct:'Контент-план пуст. Впиши, что снять или выложить, в поле выше.'})[calF]+'</p>')+'</div>';
-if(past.length)h+=sh('Прошедшие',past.length)+'<div class="grp dim">'+past.slice(0,20).map(function(x){return itRow(x,true)}).join('')+'</div>'}
+if(past.length)h+=sh('Прошедшие',past.length)+'<div class="grp dim">'+past.slice(0,20).map(function(x){return itRow(x,true)}).join('')+'</div>';
+if(calF=='ct')h+=ideasCt()}
 return h}
 
 function dayView(d){var dd=parse(d),n=dayNo(d),es=evOn(d,'ev'),cs=evOn(d,'ct'),def=calF=='ct'?'ct':'ev';
@@ -775,6 +778,8 @@ h+='<label class="pchip"><span>Проект</span><select data-ip="1"><option va
 h+='<div class="isw"><span>Цвет</span><div class="sws">'+SW.map(function(hx){return '<button class="sw'+((x.c||'').toUpperCase()==hx?' on':'')+'" style="--c:'+hx+'" data-isw="'+hx+'" aria-label="Цвет '+hx+'"></button>'}).join('')+'</div>'+(x.c?'<button class="lnk2" data-isw="auto">Стандартный</button>':'')+'</div>';
 var p=x.p&&pById(x.p);
 if(p)h+='<button class="pcard" data-view="proj:'+p.id+'" style="margin-bottom:6px"><div class="pct"><b>'+esc(p.n)+'</b><span class="cnt">'+pDone(p)+'/'+p.nodes.length+'</span></div>'+metro(p)+'</button>';
+if(!ev&&!x.date)h+='<p class="hint" style="margin:0 4px 12px">Это идея из банка. Поставь дату, и она попадёт в контент-план.</p>';
+else if(!ev)h+='<button class="chip" data-unplan="'+x.id+'" style="margin:0 0 12px">Вернуть в идеи</button>';
 h+=sh(ev?'Детали':'Описание')+'<textarea class="ta" data-inote="1" placeholder="'+(ev?'Где, с кем, что взять с собой':'Идея ролика, сценарий, хуки, ссылки на референсы')+'" aria-label="Описание">'+esc(x.note||'')+'</textarea>';
 if(delP=='it')h+='<div class="frow end"><button class="btn dn" data-itdel="'+x.id+'">Точно удалить?</button><button class="btn soft" data-pdelx="1">Отмена</button></div>';
 else h+='<button class="btn soft dn wide" data-itdelp="1">Удалить</button>';
@@ -790,8 +795,11 @@ function dayCard(n){var left=DAYS-n,nx=null;R.forEach(function(r,i){if(!nx&&r.d>
 var sub=n==DAYS?'Последний день. Подводим итоги.':'Осталось '+left+' '+pl(left,['день','дня','дней'])+'.'+(nx?' Чекпоинт «'+nx.n+'» '+(nx.d==n?'сегодня':'через '+(nx.d-n)+' '+pl(nx.d-n,['день','дня','дней']))+'.':'');
 return '<section class="launch"><div class="lnum">'+n+'</div><div class="ltx"><b>'+(n==DAYS?'финал челленджа':'день из 60')+'</b><span>'+sub+'</span></div>'+tallyHtml(true,SEL)+'</section>'}
 
+function ideasCt(){var ids=evs().filter(function(x){return x.k=='ct'&&!x.date});
+return sh('Банк идей',ids.length||'')+'<div class="grp">'+ids.map(function(x){var first=(x.note||'').split('\n')[0];return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'"><span class="kdot" style="background:'+icol(x)+'"></span><span class="rt">'+esc(x.t)+'<small>'+esc(first||x.f||'Идея')+'</small></span></button><label class="chip plan">В план<input type="date" data-iplan="'+x.id+'" aria-label="Дата публикации"></label></div>'}).join('')+'<form class="add" data-eadd="idea" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-idea" type="text" enterkeyhint="done" maxlength="120" placeholder="Новая идея для контента" aria-label="Новая идея"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div><p class="hint">Закидывай идеи сюда. Когда готова, нажми «В план» и выбери дату.</p>'}
+
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
+app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-unplan],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
 if(D.tg){var ek2=SEL+'|'+D.tg;exp[ek2]=!exp[ek2]}
 else if(D.tdel){S.todos[SEL]=tdl(SEL).filter(function(x){return x.id!=D.tdel});save()}
 else if('view' in D){if(String(D.view).indexOf('it:')==0)itBack=view;view=D.view||null;editPay=null;delP=null;toTop()}
@@ -809,6 +817,7 @@ else if(D.mvto){move(mvTask,SEL,D.mvto);mvTask=null}
 else if(D.undo){undo(D.undo,SEL)}
 else if('mv' in D){mvTask=D.mv||null}
 else if(D.day){if(calF=='ch'){SEL=D.day;tab='today';view=null;mvTask=null}else{view='day:'+D.day}toTop()}
+else if(D.unplan){var up2=evById(D.unplan);if(up2){up2.date='';save()}}
 else if(D.shift){shiftDay(+D.shift);return}
 else if(D.isw){var iw=evById(String(view).split(':')[1]);if(iw){iw.c=D.isw=='auto'?'':D.isw;save()}}
 else if(D.colp){colOpen=!colOpen}
@@ -844,6 +853,7 @@ render()});
 app.addEventListener('focusout',function(e){var t=e.target,D=t.dataset,v=String(view||'').split(':');
 if(D.pdl!==undefined){var p3=pById(v[1]);if(!p3||(t.value||'')===(p3.dl||''))return;var mx='';p3.nodes.forEach(function(x){if(x.date&&x.date>mx)mx=x.date});if(t.value&&mx&&t.value<mx)warn='Дедлайн не может быть раньше даты узла ('+dstr(mx)+')';else{p3.dl=t.value;save()}render()}
 else if(D.idate!==undefined||D.itime!==undefined){var it3=evById(v[1]);if(!it3)return;var key=D.idate!==undefined?'date':'time',nv=t.value||'';if(nv===(it3[key]||'')||(key=='date'&&!nv))return;it3[key]=nv;save();render()}
+else if(D.iplan!==undefined){var ip=evById(D.iplan);if(ip&&t.value){ip.date=t.value;save();render()}}
 else if(D.ndate!==undefined){var b=D.ndate.split(':'),p4=pById(b[0]);if(!p4)return;var x4=p4.nodes.filter(function(x){return x.id==b[1]})[0];if(!x4||(t.value||'')===(x4.date||''))return;if(t.value&&p4.dl&&t.value>p4.dl)warn='Дата узла не может быть позже дедлайна проекта ('+dstr(p4.dl)+')';else{x4.date=t.value;save()}render()}});
 app.addEventListener('input',function(e){var t=e.target,D=t.dataset,v=String(view||'').split(':'),ch=false;
 if(D.pn!==undefined){var p=pById(v[1]);if(p&&t.value.trim()){p.n=t.value;ch=true}}
@@ -859,7 +869,7 @@ var inp=f.querySelector('input'),v=inp.value.trim();if(!v)return;
 if(f.dataset.tadd!==undefined){var k=f.dataset.tadd;if(!S.todos)S.todos={};(S.todos[SEL]=S.todos[SEL]||[]).push({id:tdUid(),t:v,d:false,p:k=='_'?null:k});save();refocus=inp.id;render()}
 else if(f.dataset.newp!==undefined){var np={id:uid(),n:v,k:(f.querySelector('input[name=pk]:checked')||{value:'w'}).value,dl:'',desc:'',nodes:[]};S.proj.push(np);save();view='proj:'+np.id;toTop();render()}
 else if(f.dataset.nadd!==undefined){var p=pById(f.dataset.nadd);if(p){p.nodes.push({id:tdUid(),t:v,date:'',d:false});save();refocus='ni';render()}}
-else if(f.dataset.eadd!==undefined){var kd=(f.querySelector('input[name=ek]:checked')||{value:f.dataset.eadd}).value;var dt=(f.querySelector('input[name=ed]')||{}).value||f.dataset.ed||TODAY;var tm=(f.querySelector('input[name=et]')||{}).value||'';var fm=(f.querySelector('select[name=ef]')||{}).value||'Reels';evs().push({id:tdUid(),k:kd,t:v,date:dt,time:kd=='ev'?tm:'',f:kd=='ct'?fm:'',st:'idea',note:'',p:''});save();refocus=inp.id;render()}
+else if(f.dataset.eadd!==undefined){var kd=(f.querySelector('input[name=ek]:checked')||{value:f.dataset.eadd}).value;var dt=(f.querySelector('input[name=ed]')||{}).value||f.dataset.ed||TODAY;if(kd=='idea'){kd='ct';dt=''}var tm=(f.querySelector('input[name=et]')||{}).value||'';var fm=(f.querySelector('select[name=ef]')||{}).value||'Reels';evs().push({id:tdUid(),k:kd,t:v,date:dt,time:kd=='ev'?tm:'',f:kd=='ct'?fm:'',st:'idea',note:'',p:''});save();refocus=inp.id;render()}
 else if(f.dataset.iadd!==undefined){var sp=sById(f.dataset.iadd);if(sp){var ni={id:tdUid(),t:v,body:'',imgs:[]};sp.ideas.push(ni);save();view='idea:'+sp.id+':'+ni.id;toTop();render()}}});
 var tx0=null;app.addEventListener('touchstart',function(e){if(tab!='today'||view||e.touches.length!=1||e.target.closest('input,select,textarea,.mvbox')){tx0=null;return}tx0={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
 app.addEventListener('touchend',function(e){if(!tx0)return;var t=e.changedTouches[0],dx=t.clientX-tx0.x,dy=t.clientY-tx0.y;tx0=null;if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*0.6)shiftDay(dx<0?1:-1)},{passive:true});

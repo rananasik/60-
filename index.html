@@ -410,6 +410,13 @@ input[type=file]{display:none}
 .month .d{width:38px;height:38px;margin:0 auto 6px}
 .month .mk{bottom:3px}
 .d.td::before{border-width:1.5px}
+.dnav{display:flex;align-items:center;gap:6px;flex:none}
+.ib.dn2{width:38px;height:38px;background:var(--card);color:var(--ink)}
+.ib.dn2 svg{width:18px;height:18px}
+@keyframes slr{from{transform:translateX(26px);opacity:.35}to{transform:none;opacity:1}}
+@keyframes sll{from{transform:translateX(-26px);opacity:.35}to{transform:none;opacity:1}}
+#app.sl-r{animation:slr .22s ease-out}
+#app.sl-l{animation:sll .22s ease-out}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -572,13 +579,14 @@ return h+'</div>'}
 /* ---- today ---- */
 function todayHtml(tot,bal){var n=dayNo(SEL),tn=dayNo(TODAY),inCh=n>=1&&n<=DAYS,ed=inCh&&SEL<=TODAY;
 var d=parse(SEL),date=WD[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()];
-var back2=SEL!=TODAY?'<button class="chip" data-go="today">К сегодня</button>':'';
+var back2='<div class="dnav">'+(SEL!=TODAY?'<button class="chip" data-go="today">Сегодня</button>':'')+'<button class="ib dn2" data-shift="-1" aria-label="Предыдущий день">'+I.chevL+'</button><button class="ib dn2" data-shift="1" aria-label="Следующий день">'+I.chevR+'</button></div>';
+var dif=Math.round((parse(SEL)-parse(TODAY))/864e5),rel=dif==0?'Сегодня':dif==-1?'Вчера':dif==1?'Завтра':cap(WD[d.getDay()]);
 var h='';
 if(tn<1){var left=1-tn;
-h+='<header class="top"><div><h1 class="ttl">'+(SEL==TODAY?'Сегодня':cap(WD[d.getDay()]))+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
-if(SEL==TODAY||!inCh)h+='<section class="launch"><div class="lnum">'+left+'</div><div class="ltx"><b>'+pl(left,['день','дня','дней'])+' до старта</b><span>Челлендж 60 дней начнётся '+dstr(dateOf(1))+'. Пока здесь просто список дел.</span></div>'+tallyHtml(true)+'</section>';
+h+='<header class="top"><div><h1 class="ttl">'+rel+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
+if(SEL==TODAY)h+='<section class="launch"><div class="lnum">'+left+'</div><div class="ltx"><b>'+pl(left,['день','дня','дней'])+' до старта</b><span>Челлендж 60 дней начнётся '+dstr(dateOf(1))+'. Пока здесь просто список дел.</span></div>'+tallyHtml(true)+'</section>';
 }else{
-h+='<header class="top"><div><h1 class="ttl">'+(inCh?(n==DAYS?'Финал':'День '+n):(SEL==TODAY?'Сегодня':cap(WD[d.getDay()])))+(inCh?'<span class="of">/60</span>':'')+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
+h+='<header class="top"><div><h1 class="ttl">'+(inCh?(n==DAYS?'Финал':'День '+n):rel)+(inCh?'<span class="of">/60</span>':'')+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
 h+=tallyHtml()+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)}
 if(inCh)h+=tasksHtml(ed,n);
 return h+todosHtml()}
@@ -769,8 +777,10 @@ function render2(){var v=String(view).split(':');return v[0]=='day'?dayView(v[1]
 function calTodayHtml(){var ce=evOn(SEL);if(!ce.length)return '';
 return sh('В календаре',ce.length)+'<div class="grp">'+ce.map(function(x){return itRow(x,false)}).join('')+'</div>'}
 
+function shiftDay(n){var d=parse(SEL);d.setDate(d.getDate()+n);SEL=fmt(d);mvTask=null;render();var a=document.getElementById('app');a.classList.remove('sl-l','sl-r');void a.offsetWidth;a.classList.add(n>0?'sl-r':'sl-l')}
+
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
+app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
 if(D.tg){var ek2=SEL+'|'+D.tg;exp[ek2]=!exp[ek2]}
 else if(D.tdel){S.todos[SEL]=tdl(SEL).filter(function(x){return x.id!=D.tdel});save()}
 else if('view' in D){if(String(D.view).indexOf('it:')==0)itBack=view;view=D.view||null;editPay=null;delP=null;toTop()}
@@ -788,6 +798,7 @@ else if(D.mvto){move(mvTask,SEL,D.mvto);mvTask=null}
 else if(D.undo){undo(D.undo,SEL)}
 else if('mv' in D){mvTask=D.mv||null}
 else if(D.day){if(calF=='ch'){SEL=D.day;tab='today';view=null;mvTask=null}else{view='day:'+D.day}toTop()}
+else if(D.shift){shiftDay(+D.shift);return}
 else if(D.isw){var iw=evById(String(view).split(':')[1]);if(iw){iw.c=D.isw=='auto'?'':D.isw;save()}}
 else if(D.colp){colOpen=!colOpen}
 else if(D.sw){if(D.sw=='reset')S.cc={};else{var sp2=D.sw.split(':');S.cc=S.cc||{};S.cc[sp2[0]]=sp2[1]}save()}
@@ -839,6 +850,8 @@ else if(f.dataset.newp!==undefined){var np={id:uid(),n:v,k:(f.querySelector('inp
 else if(f.dataset.nadd!==undefined){var p=pById(f.dataset.nadd);if(p){p.nodes.push({id:tdUid(),t:v,date:'',d:false});save();refocus='ni';render()}}
 else if(f.dataset.eadd!==undefined){var kd=(f.querySelector('input[name=ek]:checked')||{value:f.dataset.eadd}).value;var dt=(f.querySelector('input[name=ed]')||{}).value||f.dataset.ed||TODAY;var tm=(f.querySelector('input[name=et]')||{}).value||'';var fm=(f.querySelector('select[name=ef]')||{}).value||'Reels';evs().push({id:tdUid(),k:kd,t:v,date:dt,time:kd=='ev'?tm:'',f:kd=='ct'?fm:'',st:'idea',note:'',p:''});save();refocus=inp.id;render()}
 else if(f.dataset.iadd!==undefined){var sp=sById(f.dataset.iadd);if(sp){var ni={id:tdUid(),t:v,body:'',imgs:[]};sp.ideas.push(ni);save();view='idea:'+sp.id+':'+ni.id;toTop();render()}}});
+var tx0=null;app.addEventListener('touchstart',function(e){if(tab!='today'||view||e.touches.length!=1||e.target.closest('input,select,textarea,.mvbox')){tx0=null;return}tx0={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
+app.addEventListener('touchend',function(e){if(!tx0)return;var t=e.changedTouches[0],dx=t.clientX-tx0.x,dy=t.clientY-tx0.y;tx0=null;if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*0.6)shiftDay(dx<0?1:-1)},{passive:true});
 document.querySelector('.nav').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;view=null;openNode=null;editPay=null;mvTask=null;delP=null;render();toTop()}});
 
 render();

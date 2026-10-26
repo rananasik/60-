@@ -417,6 +417,12 @@ input[type=file]{display:none}
 @keyframes sll{from{transform:translateX(-26px);opacity:.35}to{transform:none;opacity:1}}
 #app.sl-r{animation:slr .22s ease-out}
 #app.sl-l{animation:sll .22s ease-out}
+.beads.lt .bd.full{background:#fff}
+.beads.lt .bd.part{background:rgba(255,255,255,.62)}
+.beads.lt .bd.miss{background:rgba(255,255,255,.16)}
+.beads.lt .bd.cp.full{background:#fff}
+.beads.lt .bd.now{height:26px;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.lnum{min-width:1ch;text-align:center}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -532,8 +538,8 @@ function cbx(attr,on,dis,label){return '<label class="cb"><input type="checkbox"
 function back(to,label){return '<button class="back" data-view="'+(to||'')+'">'+I.chevL+(label||'Назад')+'</button>'}
 
 /* ---- challenge strip ---- */
-function tallyHtml(light){var h='<div class="beads'+(light?' lt':'')+'" role="img" aria-label="61 день челленджа">';
-for(var n=1;n<=DAYS;n++){var s=dateOf(n),st=light?'fut':(s==TODAY?'now':dayState(s)),cp=R.some(function(r){return r.d==n})||n==DAYS;
+function tallyHtml(light,mark){var h='<div class="beads'+(light?' lt':'')+'" role="img" aria-label="61 день челленджа">';
+for(var n=1;n<=DAYS;n++){var s=dateOf(n),st=(s==(mark||TODAY)&&(mark||!light))?'now':(light&&dayNo(TODAY)<1?'fut':dayState(s)),cp=R.some(function(r){return r.d==n})||n==DAYS;
 h+='<i class="bd '+st+(cp?' cp':'')+'"></i>'}
 return h+'</div>'}
 function statsHtml(tot,bal){return '<div class="duo"><button class="tile2" data-view="stars"><span>Баллы</span><b>'+tot+'</b>'+I.chevR+'</button><button class="tile2" data-view="money"><span>Остаток</span><b>'+money(bal)+'</b>'+I.chevR+'</button></div>'}
@@ -584,10 +590,11 @@ var dif=Math.round((parse(SEL)-parse(TODAY))/864e5),rel=dif==0?'Сегодня':
 var h='';
 if(tn<1){var left=1-tn;
 h+='<header class="top"><div><h1 class="ttl">'+rel+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
-if(SEL==TODAY)h+='<section class="launch"><div class="lnum">'+left+'</div><div class="ltx"><b>'+pl(left,['день','дня','дней'])+' до старта</b><span>Челлендж 60 дней начнётся '+dstr(dateOf(1))+'. Пока здесь просто список дел.</span></div>'+tallyHtml(true)+'</section>';
+if(inCh)h+=dayCard(n);
+else if(SEL==TODAY)h+='<section class="launch"><div class="lnum">'+left+'</div><div class="ltx"><b>'+pl(left,['день','дня','дней'])+' до старта</b><span>Челлендж 60 дней начнётся '+dstr(dateOf(1))+'. Пока здесь просто список дел.</span></div>'+tallyHtml(true)+'</section>';
 }else{
-h+='<header class="top"><div><h1 class="ttl">'+(inCh?(n==DAYS?'Финал':'День '+n):rel)+(inCh?'<span class="of">/60</span>':'')+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
-h+=tallyHtml()+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)}
+h+='<header class="top"><div><h1 class="ttl">'+rel+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
+h+=(inCh?dayCard(n):tallyHtml())+statsHtml(tot,bal)+rewardHtml(tot,bal,tn)}
 if(inCh)h+=tasksHtml(ed,n);
 return h+todosHtml()}
 
@@ -778,6 +785,10 @@ function calTodayHtml(){var ce=evOn(SEL);if(!ce.length)return '';
 return sh('В календаре',ce.length)+'<div class="grp">'+ce.map(function(x){return itRow(x,false)}).join('')+'</div>'}
 
 function shiftDay(n){var d=parse(SEL);d.setDate(d.getDate()+n);SEL=fmt(d);mvTask=null;render();var a=document.getElementById('app');a.classList.remove('sl-l','sl-r');void a.offsetWidth;a.classList.add(n>0?'sl-r':'sl-l')}
+
+function dayCard(n){var left=DAYS-n,nx=null;R.forEach(function(r,i){if(!nx&&r.d>=n&&!S.bought[i])nx=r});
+var sub=n==DAYS?'Последний день. Подводим итоги.':'Осталось '+left+' '+pl(left,['день','дня','дней'])+'.'+(nx?' Чекпоинт «'+nx.n+'» '+(nx.d==n?'сегодня':'через '+(nx.d-n)+' '+pl(nx.d-n,['день','дня','дней']))+'.':'');
+return '<section class="launch"><div class="lnum">'+n+'</div><div class="ltx"><b>'+(n==DAYS?'финал челленджа':'день из 60')+'</b><span>'+sub+'</span></div>'+tallyHtml(true,SEL)+'</section>'}
 
 var app=document.getElementById('app');
 app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;

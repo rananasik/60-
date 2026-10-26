@@ -425,6 +425,11 @@ input[type=file]{display:none}
 .lnum{min-width:1ch;text-align:center}
 .chip.plan{position:relative;display:inline-flex;align-items:center;overflow:hidden;cursor:pointer}
 .chip.plan input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;cursor:pointer}
+.pcl{display:inline-flex;align-items:center;gap:6px}
+.clr{flex:none;width:22px;height:22px;margin-left:2px;border:0;border-radius:50%;background:var(--track);color:var(--mute);display:grid;place-items:center;padding:0}
+.clr svg{width:11px;height:11px}
+.minw{display:inline-flex;align-items:center;gap:4px;margin-right:auto}
+.minw .mini{margin-right:0}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -642,12 +647,12 @@ function projView(id){var p=pById(id);if(!p){view=null;return projTab()}
 var N=p.nodes.length,dn=pDone(p),pc=N?Math.round(dn/N*100):0,cur=curNode(p);
 var h=back('','Проекты')+warnHtml();
 h+='<input class="tin" data-pn="1" type="text" maxlength="80" value="'+esc(p.n)+'" aria-label="Название проекта">';
-h+='<div class="chips"><label class="pchip"><span>Тип</span><select data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></label><label class="pchip"><span>Дедлайн</span><input type="date" data-pdl="1" value="'+(p.dl||'')+'" aria-label="Дедлайн"></label></div>';
+h+='<div class="chips"><label class="pchip"><span>Тип</span><select data-pk="1" aria-label="Тип"><option value="w"'+(p.k=='w'?' selected':'')+'>Работа</option><option value="c"'+(p.k=='c'?' selected':'')+'>Творчество</option></select></label><span class="pchip"><label class="pcl"><span>Дедлайн</span><input type="date" data-pdl="1" value="'+(p.dl||'')+'" aria-label="Дедлайн"></label>'+(p.dl?'<button class="clr" data-pdlx="1" aria-label="Убрать дедлайн"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span></div>';
 h+='<section class="hero"><div class="hrow"><div class="big">'+dn+'<span class="of"> из '+N+'</span></div><span class="pc">'+pc+'%</span></div>'+metro(p,'xl')+'</section>';
 h+=sh('Квест-линия',N?'шаг '+Math.min(N,(cur<0?N:cur+1))+' из '+N:'')+'<div class="quest">';
 p.nodes.forEach(function(x,i){var ok=canToggle(p,i),st=x.d?'dn':(i==cur?'cu':'lk'),ref=p.id+':'+x.id;
 h+='<div class="qn '+st+(openNode==x.id?' op':'')+'"><div class="qrail">'+cbx('data-nd="'+ref+'"',x.d,!ok,x.t)+'</div><div class="qbody"><button class="qtb" data-qo="'+x.id+'" aria-expanded="'+(openNode==x.id)+'"><div class="qt">'+esc(x.t)+'</div></button><div class="qm">'+(x.d?'Готово':i==cur?'Сейчас':'Откроется после шага '+(i))+(x.date?'<span class="due'+(x.date<TODAY&&!x.d?' late':'')+'">'+dstr(x.date)+'</span>':'')+'</div>';
-h+='<div class="qa"><label class="mini">'+ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')+'<input type="date" data-ndate="'+ref+'" value="'+(x.date||'')+'"'+(p.dl?' max="'+p.dl+'"':'')+' aria-label="Дата шага"><span>'+(x.date?'Дата':'Поставить дату')+'</span></label><button class="ib sm" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib sm" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button><button class="ib sm" data-ndel="'+ref+'" aria-label="Удалить шаг">'+I.close+'</button></div></div></div>'});
+h+='<div class="qa"><span class="minw"><label class="mini">'+ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')+'<input type="date" data-ndate="'+ref+'" value="'+(x.date||'')+'"'+(p.dl?' max="'+p.dl+'"':'')+' aria-label="Дата шага"><span>'+(x.date?dstr(x.date):'Поставить дату')+'</span></label>'+(x.date?'<button class="clr" data-ndx="'+ref+'" aria-label="Убрать дату"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>':'')+'</span><button class="ib sm" data-nup="'+ref+'" aria-label="Выше"'+(i==0?' disabled':'')+'>'+upI()+'</button><button class="ib sm" data-ndn="'+ref+'" aria-label="Ниже"'+(i==N-1?' disabled':'')+'>'+dnI()+'</button><button class="ib sm" data-ndel="'+ref+'" aria-label="Удалить шаг">'+I.close+'</button></div></div></div>'});
 h+='<form class="add qadd" data-nadd="'+p.id+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ni" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(N?'Следующий шаг':'Первый шаг')+'" aria-label="Новый шаг"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div>';
 h+='<p class="hint">Шаги открываются по порядку. Шаг с датой появится в делах этого дня.</p>';
 h+=sh('Заметки')+'<textarea class="ta" data-pdesc="1" placeholder="Описание, ссылки, мысли" aria-label="Заметки">'+esc(p.desc||'')+'</textarea>';
@@ -799,7 +804,7 @@ function ideasCt(){var ids=evs().filter(function(x){return x.k=='ct'&&!x.date});
 return sh('Банк идей',ids.length||'')+'<div class="grp">'+ids.map(function(x){var first=(x.note||'').split('\n')[0];return '<div class="row erow"><button class="eb" data-view="it:'+x.id+'"><span class="kdot" style="background:'+icol(x)+'"></span><span class="rt">'+esc(x.t)+'<small>'+esc(first||x.f||'Идея')+'</small></span></button><label class="chip plan">В план<input type="date" data-iplan="'+x.id+'" aria-label="Дата публикации"></label></div>'}).join('')+'<form class="add" data-eadd="idea" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ea-idea" type="text" enterkeyhint="done" maxlength="120" placeholder="Новая идея для контента" aria-label="Новая идея"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form></div><p class="hint">Закидывай идеи сюда. Когда готова, нажми «В план» и выбери дату.</p>'}
 
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-unplan],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
+app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-unplan],[data-pdlx],[data-ndx],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
 if(D.tg){var ek2=SEL+'|'+D.tg;exp[ek2]=!exp[ek2]}
 else if(D.tdel){S.todos[SEL]=tdl(SEL).filter(function(x){return x.id!=D.tdel});save()}
 else if('view' in D){if(String(D.view).indexOf('it:')==0)itBack=view;view=D.view||null;editPay=null;delP=null;toTop()}
@@ -817,6 +822,8 @@ else if(D.mvto){move(mvTask,SEL,D.mvto);mvTask=null}
 else if(D.undo){undo(D.undo,SEL)}
 else if('mv' in D){mvTask=D.mv||null}
 else if(D.day){if(calF=='ch'){SEL=D.day;tab='today';view=null;mvTask=null}else{view='day:'+D.day}toTop()}
+else if(D.pdlx){var px=pById(String(view).split(':')[1]);if(px){px.dl='';save()}}
+else if(D.ndx){var nx2=D.ndx.split(':'),pp=pById(nx2[0]);if(pp)pp.nodes.forEach(function(x){if(x.id==nx2[1])x.date=''});save()}
 else if(D.unplan){var up2=evById(D.unplan);if(up2){up2.date='';save()}}
 else if(D.shift){shiftDay(+D.shift);return}
 else if(D.isw){var iw=evById(String(view).split(':')[1]);if(iw){iw.c=D.isw=='auto'?'':D.isw;save()}}

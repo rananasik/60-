@@ -389,7 +389,7 @@ input[type=file]{display:none}
 .colp{background:var(--card);border-radius:22px;padding:14px 16px 12px;margin:0 0 14px}
 .cprow+.cprow{margin-top:14px}
 .cprow>span{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
-.sws{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.sws{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
 .sw{aspect-ratio:1;width:100%;border:0;border-radius:50%;background:var(--c);padding:0;transition:transform .12s}
 .sw.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--c);transform:scale(.86)}
 .cpf{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
@@ -748,7 +748,7 @@ function toTop(){try{window.scrollTo(0,0)}catch(e){}}
 /* ---- calendar with filters ---- */
 var calF='all';try{calF=localStorage.getItem('c60f')||'all'}catch(e){}
 var itBack=null,colOpen=false;
-var SW=['#F0458A','#EE3A2C','#FF7A1A','#F0A100','#12B886','#0FB39A','#1FA2FF','#3247FF','#7A5BFF','#6C707A'];
+var SW=['#F0458A','#EE3A2C','#FF7A1A','#F0A100','#7CC93B','#12B886','#0FB39A','#1FA2FF','#3247FF','#7A5BFF','#6C707A'];
 function applyCC(){var r=document.documentElement.style,c=S.cc||{};['ev','ct'].forEach(function(k){r.removeProperty('--'+k)})}
 function colPanel(){var c=S.cc||{};return '<div class="colp">'+[['ev','Мероприятия','#FF7A1A'],['ct','Контент','#12B886']].map(function(r){var cur=c[r[0]]||r[2];return '<div class="cprow"><span>'+r[1]+'</span><div class="sws">'+SW.map(function(h){return '<button class="sw'+(cur.toUpperCase()==h?' on':'')+'" style="--c:'+h+'" data-sw="'+r[0]+':'+h+'" aria-label="'+r[1]+': цвет '+h+'"></button>'}).join('')+'</div></div>'}).join('')+'<div class="cpf"><button class="lnk2" data-sw="reset">Вернуть стандартные</button><button class="chip" data-colp="1">Готово</button></div></div>'}
 var CF=[['all','Все','var(--ink)'],['ch','60 дней','var(--blue)'],['ev','Мероприятия','var(--ev)'],['ct','Контент','var(--ct)']];

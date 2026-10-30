@@ -462,6 +462,7 @@ button.mini{border:0}
 .lnk.tl{margin-left:10px;font-weight:600}
 .top .dnav{align-self:flex-end;margin-bottom:2px}
 #app{overflow-x:clip}
+.row.on .eb .rt{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--faint)}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -601,7 +602,7 @@ function moverHtml(){return '<div class="mvbox"><div class="mvh"><span>Пере�
 function stRow(x){return '<div class="row'+(x.d?' on':'')+'">'+cbx('data-td="'+x.id+'"',x.d,false,x.t)+'<span class="rt">'+esc(x.t)+'</span><button class="ib sm" data-tdel="'+x.id+'" aria-label="Удалить">'+I.close+'</button></div>'}
 function addForm(k){return '<form class="add" data-tadd="'+k+'" autocomplete="off"><span class="addi">'+I.plus+'</span><input class="ain" id="ti-'+String(k).replace(/[^\w]/g,'_')+'" type="text" enterkeyhint="done" maxlength="120" placeholder="'+(k=='_'?'Новая задача':'Подзадача')+'" aria-label="Новая задача"><button class="go" type="submit" aria-label="Добавить">'+I.check+'</button></form>'}
 function nodeStRow(o){var p=o.p,x=o.x,ok=canToggle(p,o.i);return '<div class="row'+(x.d?' on':'')+'">'+cbx('data-nd="'+p.id+':'+x.id+'"',x.d,!ok,x.t)+'<span class="rt">'+esc(x.t)+'<small>'+esc(p.n)+(ok||x.d?'':', ещё закрыто')+'</small></span></div>'}
-function todosHtml(){var l=tdl(SEL).filter(function(x){return x.p===null||x.p===undefined}),dc=l.filter(function(x){return x.d}).length,ns=nodesOn(SEL),h=calTodayHtml();
+function todosHtml(){var l=tdl(SEL).filter(function(x){return x.p===null||x.p===undefined}),dc=l.filter(function(x){return x.d}).length,ns=nodesOn(SEL),h=calTodayHtml()+ctTasksHtml();
 if(ns.length)h+=sh('Шаги проектов',ns.filter(function(o){return o.x.d}).length+' из '+ns.length)+'<div class="grp">'+ns.map(nodeStRow).join('')+'</div>';
 return h+sh('Мои задачи',l.length?dc+' из '+l.length:'')+'<div class="grp">'+l.map(stRow).join('')+addForm('_')+'</div><p class="hint">Без баллов. Просто чтобы ничего не забыть.</p>'}
 function tasksHtml(ed,n){var dn=S.done[SEL]||{},all=rows(SEL),act=all.filter(function(r){return !r.away}),away=all.filter(function(r){return r.away});
@@ -815,6 +816,7 @@ h+='<label class="pchip"><span>Проект</span><select data-ip="1"><option va
 h+='<div class="isw"><span>Цвет</span><div class="sws">'+SW.map(function(hx){return '<button class="sw'+((x.c||'').toUpperCase()==hx?' on':'')+'" style="--c:'+hx+'" data-isw="'+hx+'" aria-label="Цвет '+hx+'"></button>'}).join('')+'</div>'+(x.c?'<button class="lnk2" data-isw="auto">Стандартный</button>':'')+'</div>';
 var p=x.p&&pById(x.p);
 if(p)h+='<button class="pcard" data-view="proj:'+p.id+'" style="margin-bottom:6px"><div class="pct"><b>'+esc(p.n)+'</b><span class="cnt">'+pDone(p)+'/'+p.nodes.length+'</span></div>'+metro(p)+'</button>';
+if(!ev)h+=sh('Производство')+'<div class="grp">'+prodRow('sd','Съёмка',x)+prodRow('ed2','Монтаж',x)+'</div><p class="hint" style="margin-bottom:6px">Съёмка и монтаж появятся в делах на выбранные дни.</p>';
 if(!ev&&!x.date)h+='<p class="hint" style="margin:0 4px 12px">Это идея из банка. Поставь дату, и она попадёт в контент-план.</p>';
 else if(!ev)h+='<button class="chip" data-unplan="'+x.id+'" style="margin:0 0 12px">Вернуть в идеи</button>';
 h+=sh(ev?'Детали':'Описание')+'<textarea class="ta" data-inote="1" placeholder="'+(ev?'Где, с кем, что взять с собой':'Идея ролика, сценарий, хуки, ссылки на референсы')+'" aria-label="Описание">'+esc(x.note||'')+'</textarea>';
@@ -844,6 +846,7 @@ if(kind=='pdl'){var p=pById(ref);if(!p)return;o.val=p.dl||'';o.clr=true;o.title=
 else if(kind=='ndate'){var a=ref.split(':'),p2=pById(a[0]);if(!p2)return;var x=p2.nodes.filter(function(n){return n.id==a[1]})[0];if(!x)return;o.val=x.date||'';o.max=p2.dl||'';o.clr=true;o.title=esc(x.t)}
 else if(kind=='idate'){var it=evById(ref);if(!it)return;o.val=it.date||'';o.clr=it.k=='ct';o.title=esc(it.t)}
 else if(kind=='iplan'){var it2=evById(ref);if(!it2)return;o.title='Когда выложить: '+esc(it2.t)}
+else if(kind=='shoot'||kind=='edit'){var it3=evById(ref);if(!it3)return;o.val=(kind=='shoot'?it3.sd:it3.ed2)||'';o.clr=true;o.title=(kind=='shoot'?'Съёмка: ':'Монтаж: ')+esc(it3.t);if(kind=='shoot'){o.max=it3.ed2||it3.date||''}else{o.min=it3.sd||'';o.max=it3.date||''}}
 else if(kind=='form'){var inp=document.getElementById(ref);if(!inp)return;o.val=inp.value||''}
 pk=o;renderSheet(true)}
 function pickCell(s2,k,dn2){var isCh=dn2>=1&&dn2<=DAYS,mk=isCh&&R.some(function(r){return r.d==dn2}),cls='d',its=evOn(s2).slice(0,3),dis=(pk.min&&s2<pk.min)||(pk.max&&s2>pk.max);
@@ -862,6 +865,7 @@ var d=parse(pk.val||TODAY),t=nb.querySelector('[data-ym="'+d.getFullYear()+'-'+d
 function applyPick(v){var o=pk;pk=null;
 if(o.kind=='pdl'){var p=pById(o.ref);if(p){p.dl=v;save()}render()}
 else if(o.kind=='ndate'){var a=o.ref.split(':'),p2=pById(a[0]);if(p2)p2.nodes.forEach(function(x){if(x.id==a[1])x.date=v});save();render()}
+else if(o.kind=='shoot'||o.kind=='edit'){var it4=evById(o.ref);if(it4){if(o.kind=='shoot'){it4.sd=v;if(!v)it4.sdd=false}else{it4.ed2=v;if(!v)it4.edd=false}save()}render()}
 else if(o.kind=='idate'||o.kind=='iplan'){var it=evById(o.ref);if(it&&(v||it.k=='ct')){it.date=v;save()}render()}
 else if(o.kind=='form'){var inp=document.getElementById(o.ref);if(inp&&v){inp.value=v;var b=document.querySelector('[data-pick="form|'+o.ref+'"] b');if(b)b.textContent=dstr(v)}}
 renderSheet()}
@@ -906,6 +910,12 @@ if(D.soff){SY.k='';SY.st=0;SY.ok=null;try{localStorage.removeItem('c60k');localS
 if(D.snow){pullNow();return true}
 if(D.scopy){try{navigator.clipboard.writeText(fmtKey(SY.k));warn=''}catch(e){}var b=document.querySelector('[data-scopy]');if(b){b.textContent='Скопировано';setTimeout(function(){if(b)b.textContent='Скопировать код'},1500)}return 'stay'}
 return false}
+
+function prodRow(f,label,x){var v=x[f],dn=!!x[f=='sd'?'sdd':'edd'];
+return '<div class="row'+(dn?' on':'')+'">'+cbx('data-ctd="'+x.id+':'+f+'"',dn,!v,label)+'<span class="rt">'+label+'<small>'+(v?cap(WD[parse(v).getDay()])+', '+dstr(v):'Дата не выбрана')+'</small></span><button type="button" class="chip" data-pick="'+(f=='sd'?'shoot':'edit')+'|'+x.id+'">'+(v?'Изменить':'Выбрать дату')+'</button></div>'}
+function ctTasksHtml(){var l=[];evs().forEach(function(x){if(x.k!='ct')return;if(x.sd==SEL)l.push({x:x,f:'sd',dn:!!x.sdd,lb:'Снять'});if(x.ed2==SEL)l.push({x:x,f:'ed2',dn:!!x.edd,lb:'Смонтировать'})});
+if(!l.length)return '';var dc=l.filter(function(o){return o.dn}).length;
+return sh('Съёмка и монтаж',dc+' из '+l.length)+'<div class="grp">'+l.map(function(o){return '<div class="row'+(o.dn?' on':'')+'">'+cbx('data-ctd="'+o.x.id+':'+o.f+'"',o.dn,false,o.lb+' '+o.x.t)+'<button class="eb" data-view="it:'+o.x.id+'"><span class="rt">'+o.lb+': '+esc(o.x.t)+'<small>'+esc(o.x.f||'Контент')+(o.x.date?', выход '+dstr(o.x.date):'')+'</small></span></button></div>'}).join('')+'</div>'}
 
 var app=document.getElementById('app');
 app.addEventListener('click',function(e){var t=e.target.closest('[data-tg],[data-tdel],[data-view],[data-pedit],[data-psave],[data-pdel],[data-pdelp2],[data-pcancel],[data-padd],[data-go],[data-buy],[data-mvto],[data-undo],[data-mv],[data-day],[data-nup],[data-ndn],[data-ndel],[data-pdelp],[data-pdelc],[data-pdelx],[data-idel],[data-idelp],[data-imgdel],[data-qpay],[data-qo],[data-colp],[data-sw],[data-isw],[data-shift],[data-son],[data-soff],[data-snow],[data-scopy],[data-unplan],[data-pdlx],[data-ndx],[data-cf],[data-cst],[data-tasks],[data-itdelp],[data-itdel]');if(!t||t.disabled)return;var D=t.dataset;
@@ -953,6 +963,7 @@ app.addEventListener('change',function(e){var t=e.target,D=t.dataset,v=String(vi
 if(D.td){tdl(SEL).forEach(function(x){if(x.id==D.td)x.d=t.checked});save()}
 else if(D.c){(S.done[SEL]=S.done[SEL]||{})[D.c]=t.checked;save()}
 else if(D.hrs){(S.hrs=S.hrs||{})[hk(SEL,D.hrs)]=+t.value;save()}
+else if(D.ctd){var cc=D.ctd.split(':'),ci=evById(cc[0]);if(ci){ci[cc[1]=='sd'?'sdd':'edd']=t.checked;if(t.checked){if(cc[1]=='sd'&&(!ci.st||ci.st=='idea'))ci.st='shot';if(cc[1]=='ed2'&&(!ci.st||ci.st=='idea'||ci.st=='shot'))ci.st='edit'}save()}}
 else if(D.nd){var a=D.nd.split(':'),p=pById(a[0]);if(p){var i=p.nodes.map(function(x){return x.id}).indexOf(a[1]);if(i>-1&&canToggle(p,i)){p.nodes[i].d=t.checked;save()}}}
 else if(D.pk!==undefined){var p2=pById(v[1]);if(p2){p2.k=t.value;save()}}
 else if(D.pdl!==undefined||D.ndate!==undefined){return}

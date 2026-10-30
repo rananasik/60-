@@ -456,6 +456,12 @@ button.mini{border:0}
 .row.link>svg:first-child{flex:none;width:22px;height:22px;color:var(--blue);margin-right:4px}
 .hero+.hero{margin-top:12px}
 .hero .btn.lgb{margin-top:14px}
+.top>div:first-child{min-width:0;flex:1}
+.top .ttl{font-size:clamp(22px,7vw,30px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lnk{border:0;background:none;padding:0;color:var(--blue);font-size:15px;cursor:pointer}
+.lnk.tl{margin-left:10px;font-weight:600}
+.top .dnav{align-self:flex-end;margin-bottom:2px}
+#app{overflow-x:clip}
 .nav button svg .f{transition:fill-opacity .18s}
 .nav button.on svg .f{fill:currentColor;fill-opacity:.22}
 .nav button.on svg{stroke-width:2.2}
@@ -618,8 +624,8 @@ return h+'</div>'}
 /* ---- today ---- */
 function todayHtml(tot,bal){var n=dayNo(SEL),tn=dayNo(TODAY),inCh=n>=1&&n<=DAYS,ed=inCh&&SEL<=TODAY;
 var d=parse(SEL),date=WD[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()];
-var back2='<div class="dnav">'+(SEL!=TODAY?'<button class="chip" data-go="today">Сегодня</button>':'')+'<button class="ib dn2" data-shift="-1" aria-label="Предыдущий день">'+I.chevL+'</button><button class="ib dn2" data-shift="1" aria-label="Следующий день">'+I.chevR+'</button></div>';
-var dif=Math.round((parse(SEL)-parse(TODAY))/864e5),rel=dif==0?'Сегодня':dif==-1?'Вчера':dif==1?'Завтра':cap(WD[d.getDay()]);
+var back2='<div class="dnav"><button class="ib dn2" data-shift="-1" aria-label="Предыдущий день">'+I.chevL+'</button><button class="ib dn2" data-shift="1" aria-label="Следующий день">'+I.chevR+'</button></div>';
+var dif=Math.round((parse(SEL)-parse(TODAY))/864e5),rel=dif==0?'Сегодня':dif==-1?'Вчера':dif==1?'Завтра':cap(WD[d.getDay()]);if(Math.abs(dif)>1)date=d.getDate()+' '+MN[d.getMonth()];if(SEL!=TODAY)date+='<button class="lnk tl" data-go="today">к сегодня</button>';
 var h='';
 if(tn<1){var left=1-tn;
 h+='<header class="top"><div><h1 class="ttl">'+rel+'</h1><p class="dt">'+date+'</p></div>'+back2+'</header>';
